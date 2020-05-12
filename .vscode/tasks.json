@@ -1,0 +1,51 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+    {
+        "label": "common_build",
+        "type": "shell",
+        "command":"tsc",
+        "args": ["--project", "tsconfig.json"],
+        "options": {
+            "cwd": "${workspaceRoot}/Common"
+          }
+    },
+    {
+        "label": "angular_build",
+        "type": "shell",
+        "command": "ng build",
+        "options": {
+            "cwd": "${workspaceRoot}/WebApp"
+          }
+    },
+    {
+        "label": "ts_build_web_app",
+        "type":"shell",
+        "command":"tsc",
+        "args": ["--project", "tsconfig.json"],
+        "options": {
+            "cwd": "${workspaceRoot}/WebApp"
+          }
+        
+    },
+    {
+        "label": "ts_build_server",
+        "type":"shell",
+        "command":"tsc",
+        "args": ["--project", "tsconfig.json"],
+        "options": {
+            "cwd": "${workspaceRoot}/Server"
+          }
+        
+    },
+    {
+        "label": "Build",
+        "dependsOn": [
+            "common_build",
+            "angular_build",
+            "ts_build_web_app",
+            "ts_build_server"
+        ]
+    }
+]
+}

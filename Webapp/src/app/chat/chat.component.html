@@ -1,0 +1,9 @@
+<div id="chat">
+  <div id="chat-window">
+      <div *ngFor="let message of messageList">
+        <p>{{message}}</p>
+      </div>
+  </div>
+  <input  [(ngModel)]="message" (keyup)="OnMessageChanged($event)" type = "text" placeholder="Message"/>
+  <button (click)="OnSend()">Send</button>
+</div>

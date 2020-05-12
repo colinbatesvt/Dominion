@@ -1,0 +1,13 @@
+Name: <input  [(ngModel)]="playerName"  type = "text" placeholder=""/><br>
+Favorite Color: <input [(ngModel)]="playerColor" type="color"/>
+<br>
+
+<h1>Games</h1>
+<table>
+  <th>Game</th><th>Player Count</th><th></th>
+  <tr *ngFor="let gameName of gameNames; let i = index"><td>{{gameName}}</td><td>{{playerCounts[i]}}/4</td><td><button (click)="onJoin(gameName)">Join</button></td></tr>
+</table>
+<br>
+<h1> Create New Game</h1>
+<input  [(ngModel)]="newGameName"  type = "text" placeholder=""/>
+<button (click)="onCreate()">Create</button>
