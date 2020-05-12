@@ -1,6 +1,6 @@
 import { Player } from "./player";
 
-enum GameState {
+export enum GameState {
     Setup = 1,
     PlayGame,
     GameOver

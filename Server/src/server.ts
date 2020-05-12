@@ -2,7 +2,7 @@ import express from 'express';
 import socket from 'socket.io'
 import path from 'path'
 import { Card } from '../../Common/src/card'
-import { Game } from '../../Common/src/game'
+import { Game, GameState } from '../../Common/src/game'
 import { Player } from '../../Common/src/player';
 
 const app = express();
@@ -93,49 +93,55 @@ io.on('connection', (connectedSocket) => {
       }
       if(reconnectedPlayer === undefined)
       {
-        if(joinGame.state !== Setup)
+        if(joinGame.state !== GameState.Setup)
         {
           opOk = false;
           opError = "Unable to join game, game is already in progress";
         }
-        if(joinGame.players.length >= 4)
+        if(opOk === true)
         {
-          opOk = false;
-          opError = "Unable to join game, player limit reached";
-        }
-        for(const player of joinGame.players)
-        {
-          if(player.name === data.playerName)
+          if(joinGame.players.length >= 4)
           {
-            // if there is a player already connected with that name, you can't join
-            if(player.connected === true)
+            opOk = false;
+            opError = "Unable to join game, player limit reached";
+          }
+          if(opOk === true)
+          {
+            for(const player of joinGame.players)
             {
-              opOk = false;
-              opError = "There is already a player in the selected game with that name";
+              if(player.name === data.playerName)
+              {
+                // if there is a player already connected with that name, you can't join
+                if(player.connected === true)
+                {
+                  opOk = false;
+                  opError = "There is already a player in the selected game with that name";
+                }
+              }
+              // player colors have to be unique
+              if(player.color === data.playerColor)
+              {
+                  opOk = false;
+                  opError = "There is already a player in the selected game with that favorite color";
+              }
             }
           }
-          // player colors have to be unique
-          if(player.color === data.playerColor)
+        }
+        if(opOk === true)
+        {
+          let newPlayer: Player;
+          if(reconnectedPlayer === undefined)
           {
-              opOk = false;
-              opError = "There is already a player in the selected game with that favorite color";
+            newPlayer = new Player(data.playerName, data.playerColor, connectedSocket.id);
+            joinGame.addPlayer(newPlayer);
           }
+          else
+          {
+            newPlayer = reconnectedPlayer;
+          }
+          opReturnValue.game = joinGame;
+          opReturnValue.player = newPlayer;
         }
-      }
-      if(opOk === true)
-      {
-        let newPlayer: Player;
-        if(reconnectedPlayer === undefined)
-        {
-          newPlayer = new Player(data.playerName, data.playerColor, connectedSocket.id);
-          joinGame.addPlayer(newPlayer);
-        }
-        else
-        {
-          newPlayer = reconnectedPlayer;
-        }
-        opReturnValue.game = joinGame;
-        opReturnValue.player = newPlayer;
       }
     }
     else
