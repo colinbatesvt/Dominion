@@ -3,6 +3,7 @@ import { Socket } from 'ngx-socket-io';
 import { Observable, Subject } from 'rxjs';
 import { Game } from '../../../Common/src/game';
 import { Player } from '../../../Common/src/player';
+import { StatusService } from './status.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,7 @@ export class GameService {
   private game: Game;
   private gameSubject: Subject<Game>;
 
-constructor(private socket: Socket) {
+constructor(private socket: Socket, private statusService: StatusService) {
    this.gameSubject = new Subject<Game>();
  }
 
@@ -32,6 +33,7 @@ public sendToServer(event: string, data: any, returnCallback: (returnValue: any)
       }
       else
       {
+        this.statusService.setStatus(result.error);
         console.log('error sending: ' + event + '. reason: ' + result.error);
       }
 

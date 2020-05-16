@@ -8,7 +8,6 @@ import { AppComponent } from './app.component';
 import { HandComponent } from './hand/hand.component';
 import { CardComponent } from './card/card.component';
 import { HttpClientModule } from '@angular/common/http';
-import { ChatComponent } from './chat/chat.component';
 import { JoinGameComponent } from './join-game/join-game.component';
 import { PlayGameComponent } from './play-game/play-game.component';
 import { BannerComponent } from './banner/banner.component';
@@ -32,7 +31,6 @@ const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
       AppComponent,
       HandComponent,
       CardComponent,
-      ChatComponent,
       JoinGameComponent,
       PlayGameComponent,
       BannerComponent,

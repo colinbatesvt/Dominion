@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { GameService } from '../game.service';
 import { Game } from '../../../../Common/src/game';
+import { StatusService } from '../status.service';
 
 @Component({
   selector: 'app-join-game',
@@ -15,10 +16,13 @@ export class JoinGameComponent implements OnInit {
   playerName: string;
   playerColor: string;
 
-  constructor(private gameService: GameService) {
+  status: string;
+
+  constructor(private gameService: GameService, private statusService: StatusService) {
     this.newGameName = '';
     this.playerName = '';
     this.playerColor = '';
+    this.status = '';
   }
 
   ngOnInit() {
@@ -35,6 +39,10 @@ export class JoinGameComponent implements OnInit {
       }
     });
 
+    this.statusService.onStatusChanged().subscribe((newStatus: string) => {
+      this.status = newStatus;
+    });
+
     this.gameService.requestGames();
   }
 
@@ -44,11 +52,27 @@ export class JoinGameComponent implements OnInit {
     {
       this.gameService.joinGame(this.playerName, this.playerColor, gameName);
     }
+    else
+    {
+      this.statusService.setStatus('Please enter a player name');
+    }
   }
 
   onCreate()
   {
-    if (this.playerName !== '' && this.newGameName !== '')
+    if (this.playerName === '' && this.newGameName === '')
+    {
+      this.statusService.setStatus('Please enter a game and player name');
+    }
+    else if (this.playerName === '')
+    {
+      this.statusService.setStatus('Please enter a player name');
+    }
+    else if (this.newGameName === '')
+    {
+      this.statusService.setStatus('Please enter a game name');
+    }
+    else
     {
       this.gameService.createGame(this.playerName, this.playerColor, this.newGameName);
       this.newGameName = '';

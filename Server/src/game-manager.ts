@@ -18,6 +18,7 @@ export class GameManager
     }
 
     // respond to a join request
+    // this got kinda ugly, can we pretty it up?
     public joinGame(data: any, resultCallback: any, connectedSocket: any) : boolean {
         let opOk = true;
         let opError = "";

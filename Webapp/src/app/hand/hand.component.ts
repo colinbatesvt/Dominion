@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Card } from '../../../../Common/src/card';
 import { CardLibrary } from '../../../../Common/src/card-library';
-import {CardService} from '../card.service';
-import { MessageService } from '../message.service';
 
 @Component({
   selector: 'app-hand',
@@ -15,7 +13,7 @@ export class HandComponent implements OnInit {
   cards: Card[];
   library: CardLibrary;
 
-  constructor(private cardService: CardService, private messageService: MessageService) {
+  constructor() {
     this.library = new CardLibrary();
   }
 
@@ -27,12 +25,10 @@ export class HandComponent implements OnInit {
     if (this.selectedCard !== card)
     {
       this.selectedCard = card;
-      this.messageService.add(`CardService: Selected a new card`);
     }
     else
     {
       this.selectedCard = null;
-      this.messageService.add(`CardService: Deselected card`);
     }
   }
 

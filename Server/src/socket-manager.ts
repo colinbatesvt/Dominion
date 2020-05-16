@@ -27,7 +27,6 @@ export class SocketManager {
                 {
                     connectedSocket.join(data.gameName);
                 }
-                // TODO: only update sockets in this room, not everyone.
                 io.sockets.emit('games-updated', this.gameManager.getGameList());
             });
 
