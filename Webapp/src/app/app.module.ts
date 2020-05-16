@@ -11,6 +11,18 @@ import { HttpClientModule } from '@angular/common/http';
 import { ChatComponent } from './chat/chat.component';
 import { JoinGameComponent } from './join-game/join-game.component';
 import { PlayGameComponent } from './play-game/play-game.component';
+import { BannerComponent } from './banner/banner.component';
+
+// angular material imports
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import {  MatMenuModule } from '@angular/material/menu';
+import {  MatToolbarModule } from '@angular/material/toolbar';
+import {  MatIconModule } from '@angular/material/icon';
+import {  MatSidenavModule } from '@angular/material/sidenav';
+import {  MatListModule } from '@angular/material/list';
+import { SetupGameComponent } from './setup-game/setup-game.component';
 
 const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
 
@@ -22,13 +34,23 @@ const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
       CardComponent,
       ChatComponent,
       JoinGameComponent,
-      PlayGameComponent
+      PlayGameComponent,
+      BannerComponent,
+      SetupGameComponent
    ],
    imports: [
       BrowserModule,
+      BrowserAnimationsModule,
       HttpClientModule,
       FormsModule,
-      SocketIoModule.forRoot(config)
+      SocketIoModule.forRoot(config),
+      MatButtonModule,
+      MatMenuModule,
+      MatCardModule,
+      MatToolbarModule,
+      MatIconModule,
+      MatSidenavModule,
+      MatListModule
    ],
    providers: [],
    bootstrap: [

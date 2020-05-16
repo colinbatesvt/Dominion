@@ -4,11 +4,9 @@ app-chat {
   height: 80%
 }
 
-#game-area {
-  border-width: 1px;
-  border: 1px solid black;
-  Height: 80%;
-  Width: 100%;
+app-play-game {
+  height: 80%;
+  width: 100%;
 }
 
 app-hand {

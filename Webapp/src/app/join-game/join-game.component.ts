@@ -16,6 +16,9 @@ export class JoinGameComponent implements OnInit {
   playerColor: string;
 
   constructor(private gameService: GameService) {
+    this.newGameName = '';
+    this.playerName = '';
+    this.playerColor = '';
   }
 
   ngOnInit() {
@@ -47,7 +50,6 @@ export class JoinGameComponent implements OnInit {
   {
     if (this.playerName !== '' && this.newGameName !== '')
     {
-      console.log(this.playerColor);
       this.gameService.createGame(this.playerName, this.playerColor, this.newGameName);
       this.newGameName = '';
     }

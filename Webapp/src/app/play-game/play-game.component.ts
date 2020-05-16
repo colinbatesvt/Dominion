@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { GameService } from '../game.service';
+import { Game } from '../../../../Common/src/game';
 
 @Component({
   selector: 'app-play-game',
@@ -8,10 +9,13 @@ import { GameService } from '../game.service';
 })
 export class PlayGameComponent implements OnInit {
 
-  playerName: string;
+  game: Game;
 
   constructor(private gameService: GameService) {
-    this.playerName = gameService.GetPlayer().name;
+    this.game = gameService.getGame();
+    this.gameService.onGameChanged().subscribe((game: Game) => {
+      this.game = game;
+    });
   }
 
   ngOnInit() {

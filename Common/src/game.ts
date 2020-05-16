@@ -1,9 +1,9 @@
 import { Player } from "./player";
 
 export enum GameState {
-    Setup = 1,
-    PlayGame,
-    GameOver
+    Setup = 'setup',
+    PlayGame = 'play',
+    GameOver = 'over'
 };
 
 export class Game {

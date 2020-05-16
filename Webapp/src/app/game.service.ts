@@ -51,8 +51,11 @@ public joinGame(myPlayerName: string, myPlayerColor: string, myGameName: string)
 
 public createGame(newPlayerName: string, newPlayerColor: string, newGameName: string)
 {
-  this.sendToServer('create-game', newGameName, () => {});
-  this.joinGame(newPlayerName, newPlayerColor, newGameName);
+  // create the game, and join it if it's created successfully
+  this.sendToServer('create-game', newGameName, () => {
+    this.joinGame(newPlayerName, newPlayerColor, newGameName);
+
+  });
 }
 
 public requestGames()
@@ -60,6 +63,9 @@ public requestGames()
   this.sendToServer('request-games-list', {}, () => {});
 }
 
+public getGame(): Game {
+  return this.game;
+}
 public onGameChanged = () => {
   return this.gameSubject.asObservable();
 }
@@ -67,7 +73,18 @@ public onGameChanged = () => {
 public onGamesUpdated = () => {
   return Observable.create((observer) => {
     this.socket.on('games-updated', (games: Game[]) => {
-        observer.next(games);
+      if (this.game !== undefined)
+      {
+        for (const game of games)
+        {
+          if (game.name === this.game.name)
+          {
+            this.game = game;
+            this.gameSubject.next(this.game);
+          }
+       }
+      }
+      observer.next(games);
     });
   });
 }

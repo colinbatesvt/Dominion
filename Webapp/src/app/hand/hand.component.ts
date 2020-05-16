@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Card } from '../../../../Common/src/card';
+import { CardLibrary } from '../../../../Common/src/card-library';
 import {CardService} from '../card.service';
 import { MessageService } from '../message.service';
 
@@ -12,8 +13,10 @@ export class HandComponent implements OnInit {
 
   selectedCard: Card;
   cards: Card[];
+  library: CardLibrary;
 
   constructor(private cardService: CardService, private messageService: MessageService) {
+    this.library = new CardLibrary();
   }
 
   ngOnInit() {
@@ -34,7 +37,8 @@ export class HandComponent implements OnInit {
   }
 
   getCards(): void {
-    this.cardService.getCards().subscribe(cards => this.cards = cards);
+    this.cards = this.library.getAllCards();
+    console.log(this.cards);
   }
 
 }

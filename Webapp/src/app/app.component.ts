@@ -18,7 +18,6 @@ export class AppComponent implements OnInit{
 
   ngOnInit() {
     this.gameService.onGameChanged().subscribe((game: Game) => {
-      console.log(game);
       this.gameName = game.name;
     });
   }

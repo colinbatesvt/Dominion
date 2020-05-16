@@ -1,0 +1,8 @@
+<div *ngFor="let player of game.players">
+    <h1>{{player.name}}</h1>
+</div>
+<div class = "row" *ngFor="let card of cards">
+  <div class="column">
+    <app-card [card]="card" [selected]="card === selectedCard" (click)="onSelect(card)" ></app-card>
+  </div>
+</div>
