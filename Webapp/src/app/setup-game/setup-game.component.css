@@ -1,8 +1,28 @@
-* {
-    box-sizing: border-box;
+.content{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin-left: auto;
+    margin-right: auto;
+    height: 100%;
+    width: 50%;
+  }
+
+mat-card{
+    width: 100%;
 }
-  
-.column {
+
+mat-card-content{
+    width: 100%;
+}
+
+#cardGrid {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    grid-gap: 1em;
+}
+
+#playerList {
     float: left;
-    padding-right: 5px;
 }

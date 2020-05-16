@@ -12,7 +12,8 @@ import { Game, GameState } from '../../../../Common/src/game';
 export class SetupGameComponent implements OnInit {
 
   selectedCard: Card;
-  cards: Card[];
+  basicCards: Card[];
+  kingdomCards: Card[];
   library: CardLibrary;
   game: Game;
 
@@ -20,6 +21,9 @@ export class SetupGameComponent implements OnInit {
 
   ngOnInit() {
     this.library = this.library = new CardLibrary();
+    this.basicCards = [];
+    this.kingdomCards = [];
+
     this.getCards();
     this.game = this.gameService.getGame();
     console.log('players: ' + this.game.players);
@@ -41,6 +45,18 @@ export class SetupGameComponent implements OnInit {
   }
 
   getCards(): void {
-    this.cards = this.library.getAllCards();
+    const cards: Card[] = this.library.getAllCards();
+
+    for (const card of cards)
+    {
+        if (card.isKingdom === true)
+        {
+          this.kingdomCards.push(card);
+        }
+        else
+        {
+          this.basicCards.push(card);
+        }
+    }
   }
 }

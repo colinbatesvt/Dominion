@@ -21,8 +21,11 @@ import { Woodcutter } from "./CardDefinitions/woodcutter";
 export class CardLibrary {
 
     private cardIndex: Record<string, CardDefinition>;
+    private nextCardId: number;
 
     constructor() {
+        this.nextCardId = 0;
+
         this.cardIndex = {};
         this.cardIndex[Copper.cardName] = new Copper();
         this.cardIndex[Silver.cardName] = new Silver();
@@ -50,7 +53,8 @@ export class CardLibrary {
        const cards: Card[] = [];
        for(let card in this.cardIndex)
        {
-           cards.push(this.cardIndex[card].getCard())
+           cards.push(this.cardIndex[card].getCard(this.nextCardId))
+           this.nextCardId++;
        }
 
        return cards;

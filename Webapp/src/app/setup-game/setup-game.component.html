@@ -1,8 +1,21 @@
-<div *ngFor="let player of game.players">
-    <h1>{{player.name}}</h1>
+<div id="playerList" *ngFor="let player of game.players">
+    <p>{{player.name}}</p>
 </div>
-<div class = "row" *ngFor="let card of cards">
-  <div class="column">
-    <app-card [card]="card" [selected]="card === selectedCard" (click)="onSelect(card)" ></app-card>
-  </div>
-</div>
+
+<mat-card class="content">
+  <mat-card-title>Basic Cards</mat-card-title>
+  <mat-card-content>
+      <div id = "cardGrid">
+        <app-card  *ngFor ="let card of basicCards" [card]="card" [selected]="card === selectedCard" (click)="onSelect(card)" ></app-card>
+      </div>
+  </mat-card-content>
+</mat-card>
+
+<mat-card class="content">
+  <mat-card-title>Kingdom Cards</mat-card-title>
+  <mat-card-content>
+    <div id = "cardGrid">
+      <app-card  *ngFor ="let card of kingdomCards" [card]="card" [selected]="card === selectedCard" (click)="onSelect(card)" ></app-card>
+    </div>
+  </mat-card-content>
+</mat-card>
