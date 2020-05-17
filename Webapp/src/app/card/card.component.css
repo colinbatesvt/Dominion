@@ -3,15 +3,13 @@
     border-color: #80e5ff;
     border-radius: 5px;
     border-width: 5px;
-    height: auto;
-    width: 200px;
+    margin: 0px;
   }
 
-.unselected {
-  height: auto;
-  width: 100px;
-}
 
 img {
   box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 12px 40px 0 rgba(0, 0, 0, 0.19);
+  height: auto;
+  width: 150px;
+  margin: 5px;
 }

@@ -26,6 +26,10 @@ export abstract class CardDefinition{
         return card;
     }
 
+    public getCardName(): string{
+        return (<typeof CardDefinition> this.constructor).cardName
+    }
+
     //override in child classes
     public GetURL() : string {
         return this.cardImageUrl;

@@ -5,6 +5,7 @@ export class Player {
     public color: string;
     public socketId: any;
     public connected: boolean;
+    public setupReady: boolean;
 
     constructor(playerName: string, playerColor: string, socketId: any)
     {
@@ -12,6 +13,7 @@ export class Player {
         this.color = playerColor;
         this.socketId = socketId;
         this.connected = true;
+        this.setupReady = false;
     }
 
     public SetConnected(connected: boolean)

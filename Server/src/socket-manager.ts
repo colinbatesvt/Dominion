@@ -1,5 +1,6 @@
 import socket from 'socket.io'
 import { GameManager } from './game-manager';
+import { Game } from '../../Common/src/game';
 
 export class SocketManager {
 
@@ -44,6 +45,68 @@ export class SocketManager {
                 console.log('player left');
                 this.gameManager.onDisconnect(connectedSocket);
                 io.sockets.emit('games-updated', this.gameManager.getGameList());
+            });
+
+            connectedSocket.on('setup-card-selected', (data, resultCallback) => {
+                console.log('card selected');
+                const game: Game = this.gameManager.getGame(data.gameName);
+                let bOk: boolean = true;
+                if(game !== undefined)
+                {
+                    game.setupSelectCard(data.cardName);
+                    io.in(data.gameName).emit('game-updated', game);
+                }
+                else
+                    bOk = false;
+
+                resultCallback({ok: bOk});
+            });
+
+            connectedSocket.on('setup-preset-selected', (data, resultCallback) => {
+                console.log('preset selected');
+                const game: Game = this.gameManager.getGame(data.gameName);
+                let bOk: boolean = true;
+                if(game !== undefined)
+                {
+                    game.setupSelectPreset(data.presetName);
+                    io.in(data.gameName).emit('game-updated', game);
+                }
+                else
+                    bOk = false;
+
+                resultCallback({ok: bOk});
+            });
+
+            connectedSocket.on('setup-player-ready', (data, resultCallback) => {
+                console.log('player ready');
+                const game: Game = this.gameManager.getGame(data.gameName);
+                let bOk: boolean = true;
+                if(game !== undefined)
+                {
+                    bOk = game.setupPlayerReady(data.playerName);
+                    if(bOk === true)
+                        io.in(data.gameName).emit('game-updated', game);
+                }
+                else
+                    bOk = false;
+
+                resultCallback({ok: bOk});
+            });
+
+            connectedSocket.on('setup-start-game', (data, resultCallback) => {
+                console.log('game start');
+                const game: Game = this.gameManager.getGame(data.gameName);
+                let bOk: boolean = true;
+                if(game !== undefined)
+                {
+                    bOk = game.setupStartGame();
+                    if(bOk === true)
+                        io.in(data.gameName).emit('game-updated', game);
+                }
+                else
+                    bOk = false;
+
+                resultCallback({ok: bOk});
             });
         });
     }

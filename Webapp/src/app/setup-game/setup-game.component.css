@@ -2,10 +2,10 @@
     display: flex;
     align-items: center;
     flex-direction: column;
-    margin-left: auto;
-    margin-right: auto;
+    margin-left: 20%;
+    margin-right: 20%;
     height: 100%;
-    width: 50%;
+    width: 60%;
   }
 
 mat-card{
@@ -16,13 +16,52 @@ mat-card-content{
     width: 100%;
 }
 
-#cardGrid {
+#basicCards {
     width: 100%;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
+    grid-gap: 1em;
+}
+
+#kingdomCards {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     grid-gap: 1em;
 }
 
 #playerList {
     float: left;
+    width: 18%;
+
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+
+    
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    background-color: white;
+}
+
+.colorBox {
+    width: 10px;
+    height: 10Px;
+    border: 1px solid black;
+}
+#playerTable {
+    border-collapse: collapse;
+}
+
+ #playerTable td, 
+ #playerTable th {
+    border: 1px solid rgb(37, 37, 37);
+    padding: 8px;
+}
+
+#nestedTable {
+    border-collapse: collapse;
+}
+
+#nestedTable td{
+    border-width: 0px;
 }

@@ -17,6 +17,18 @@ export class GameManager
         return this.gameList;
     }
 
+    public getGame(gameName: string) : Game {
+      for(const game of this.gameList)
+      {
+          if(game.name === gameName)
+          {
+            return game;
+          }
+      }
+
+      return undefined;
+  }
+
     // respond to a join request
     // this got kinda ugly, can we pretty it up?
     public joinGame(data: any, resultCallback: any, connectedSocket: any) : boolean {
@@ -131,7 +143,7 @@ export class GameManager
     public onDisconnect(connectedSocket: any) {
         for(const game of this.gameList)
         {
-            const foundPlayer: Player = game.findPlayer(connectedSocket.id);
+            const foundPlayer: Player | undefined = game.findPlayerById(connectedSocket.id);
             if(foundPlayer !== undefined)
             {
                 console.log(foundPlayer.name + " disconnected");

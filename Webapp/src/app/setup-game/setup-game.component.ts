@@ -16,6 +16,8 @@ export class SetupGameComponent implements OnInit {
   kingdomCards: Card[];
   library: CardLibrary;
   game: Game;
+  presets: string[];
+  selectedPreset: string;
 
   constructor(private gameService: GameService) { }
 
@@ -23,25 +25,19 @@ export class SetupGameComponent implements OnInit {
     this.library = this.library = new CardLibrary();
     this.basicCards = [];
     this.kingdomCards = [];
-
     this.getCards();
+
+    this.presets = this.library.getPresetNames();
+    console.log(this.presets);
     this.game = this.gameService.getGame();
-    console.log('players: ' + this.game.players);
     this.gameService.onGameChanged().subscribe((game: Game) => {
       this.game = game;
-      console.log('updated setup');
+      this.selectedPreset = this.game.setupPreset;
     });
   }
 
   onSelect(card: Card): void {
-    if (this.selectedCard !== card)
-    {
-      this.selectedCard = card;
-    }
-    else
-    {
-      this.selectedCard = null;
-    }
+    this.gameService.setupSelectCard(card.cardType);
   }
 
   getCards(): void {
@@ -58,5 +54,36 @@ export class SetupGameComponent implements OnInit {
           this.basicCards.push(card);
         }
     }
+  }
+
+  selectPreset() {
+    this.gameService.setupSelectPreset(this.selectedPreset);
+  }
+
+  onReady() {
+    this.gameService.setupReady();
+  }
+
+  onStart() {
+    this.gameService.setupStartGame();
+  }
+
+  // if you want to start a game, everyone needs to be ready, and you need 10 cards selected
+  canStart(): boolean{
+    let canStart = true;
+
+    for (const player of this.game.players)
+    {
+      if (!player.setupReady)
+      {
+        canStart = false;
+      }
+    }
+
+    if (this.game.setupSelectedCards.length !== 10)
+    {
+      canStart = false;
+    }
+    return canStart;
   }
 }

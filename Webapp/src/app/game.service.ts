@@ -16,6 +16,15 @@ export class GameService {
 
 constructor(private socket: Socket, private statusService: StatusService) {
    this.gameSubject = new Subject<Game>();
+
+   this.socket.on('game-updated', (game: Game) => {
+      console.log('game updated');
+      if (this.game !== undefined)
+      {
+        this.game = game;
+        this.gameSubject.next(this.game);
+      }
+   });
  }
 
 public GetPlayer(): Player {
@@ -56,7 +65,6 @@ public createGame(newPlayerName: string, newPlayerColor: string, newGameName: st
   // create the game, and join it if it's created successfully
   this.sendToServer('create-game', newGameName, () => {
     this.joinGame(newPlayerName, newPlayerColor, newGameName);
-
   });
 }
 
@@ -65,9 +73,40 @@ public requestGames()
   this.sendToServer('request-games-list', {}, () => {});
 }
 
+public setupSelectCard(selectedCard: string)
+{
+  this.sendToServer('setup-card-selected', {
+    gameName: this.game.name,
+    cardName: selectedCard
+  }, () => {});
+}
+
+public setupSelectPreset(selectedPreset: string)
+{
+  this.sendToServer('setup-preset-selected', {
+    gameName: this.game.name,
+    presetName: selectedPreset
+  }, () => {});
+}
+
+public setupReady() {
+  this.sendToServer('setup-player-ready', {
+    gameName: this.game.name,
+    playerName: this.player.name
+  }, () => {});
+}
+
+public setupStartGame() {
+  this.sendToServer('setup-start-game', {
+    gameName: this.game.name
+  }, () => {});
+}
+
+
 public getGame(): Game {
   return this.game;
 }
+
 public onGameChanged = () => {
   return this.gameSubject.asObservable();
 }

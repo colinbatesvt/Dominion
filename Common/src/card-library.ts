@@ -20,13 +20,15 @@ import { Woodcutter } from "./CardDefinitions/woodcutter";
 
 export class CardLibrary {
 
-    private cardIndex: Record<string, CardDefinition>;
+    private cardIndex: Record<string, CardDefinition>; //map of card names to card definitions
     private nextCardId: number;
+    private presetIndex: Record<string, string[]>; // map of preset names to card names in that preset
 
     constructor() {
         this.nextCardId = 0;
 
         this.cardIndex = {};
+        // basic cards
         this.cardIndex[Copper.cardName] = new Copper();
         this.cardIndex[Silver.cardName] = new Silver();
         this.cardIndex[Gold.cardName] = new Gold();
@@ -35,7 +37,7 @@ export class CardLibrary {
         this.cardIndex[Province.cardName] = new Province();
         this.cardIndex[Curse.cardName] = new Curse();
 
-        //actions
+        // actions
         this.cardIndex[Cellar.cardName] = new Cellar();
         this.cardIndex[Market.cardName] = new Market();
         this.cardIndex[Militia.cardName] = new Militia();
@@ -46,6 +48,20 @@ export class CardLibrary {
         this.cardIndex[Village.cardName] = new Village();
         this.cardIndex[Woodcutter.cardName] = new Woodcutter();
         this.cardIndex[Workshop.cardName] = new Workshop();
+
+        // presets
+        this.presetIndex = {};
+        this.presetIndex['First Game'] = [
+            Cellar.cardName,
+            Market.cardName,
+            Militia.cardName,
+            Mine.cardName,
+            Moat.cardName,
+            Remodel.cardName,
+            Smithy.cardName,
+            Village.cardName,
+            Woodcutter.cardName,
+            Workshop.cardName];
     }
 
     public getAllCards() : Card[]
@@ -58,5 +74,44 @@ export class CardLibrary {
        }
 
        return cards;
+    }
+
+    public getCard(cardName: string): Card | null {
+        if(this.cardIndex[cardName] !== undefined)
+        {
+            const card: Card = this.cardIndex[cardName].getCard(this.nextCardId);
+            this.nextCardId++;
+            return card;
+        }
+        else
+            return null;
+    }
+
+    public getCardDefinition(cardName: string) {
+        return this.cardIndex[cardName];
+    }
+
+    public getBasicCardNames() : string[]
+    {
+       const cards: string[] = [];
+       for(let card in this.cardIndex)
+       {
+           if (!this.cardIndex[card].isKingdom)
+           {
+                cards.push(this.cardIndex[card].getCardName());
+           }
+       }
+
+       return cards;
+    }
+
+    public getPresetNames(): string[]
+    {
+        return Object.keys(this.presetIndex);
+    }
+
+    public getPresetCardNames(preset: string) : string[]
+    {
+        return this.presetIndex[preset];
     }
 }

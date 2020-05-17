@@ -22,7 +22,7 @@ import {  MatIconModule } from '@angular/material/icon';
 import {  MatSidenavModule } from '@angular/material/sidenav';
 import {  MatListModule } from '@angular/material/list';
 import { SetupGameComponent } from './setup-game/setup-game.component';
-import { ScrollingModule } from '@angular/cdk/scrolling';
+import {MatSelectModule} from '@angular/material/select';
 
 const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
 
@@ -50,7 +50,7 @@ const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
       MatIconModule,
       MatSidenavModule,
       MatListModule,
-      ScrollingModule
+      MatSelectModule
    ],
    providers: [],
    bootstrap: [

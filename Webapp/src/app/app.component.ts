@@ -20,6 +20,7 @@ export class AppComponent implements OnInit{
     this.gameService.onGameChanged().subscribe((game: Game) => {
       this.gameName = game.name;
     });
+    this.gameService.createGame('Colin', '#000000', 'Test Game');
   }
 }
 

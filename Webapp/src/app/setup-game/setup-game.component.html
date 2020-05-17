@@ -1,21 +1,50 @@
-<div id="playerList" *ngFor="let player of game.players">
-    <p>{{player.name}}</p>
+<div id="playerList">
+  <mat-card-title>Players</mat-card-title>
+  <table id = "playerTable">
+    <th>Player</th><th>Ready</th>
+    <tr *ngFor="let player of game.players">
+        <td>
+          <!-- this cell has a nested table to make these items display next to ech other (yuck) -->
+          <table id="nestedTable">
+            <tr>
+              <td>{{player.name}}</td> 
+              <td><div class="colorBox" [style.color]="player.color"></div></td>
+            </tr>
+          </table>
+        </td>
+        <td style = "color: green;"*ngIf="player.setupReady === true">&#10003;</td><td style = "color: red;" *ngIf="player.setupReady === false">X</td>
+    </tr>
+  </table>
+  <button mat-button color="primary" (click)="onReady()">Ready</button>
+  <button mat-button color="primary" (click)="onStart()" [disabled]="!canStart()">Start</button>
 </div>
 
 <mat-card class="content">
   <mat-card-title>Basic Cards</mat-card-title>
   <mat-card-content>
-      <div id = "cardGrid">
-        <app-card  *ngFor ="let card of basicCards" [card]="card" [selected]="card === selectedCard" (click)="onSelect(card)" ></app-card>
+      <div id = "basicCards">
+        <app-card  *ngFor ="let card of basicCards" [card]="card" [selected]="card === selectedCard"></app-card>
       </div>
   </mat-card-content>
 </mat-card>
 
+<br>
+
 <mat-card class="content">
   <mat-card-title>Kingdom Cards</mat-card-title>
   <mat-card-content>
-    <div id = "cardGrid">
-      <app-card  *ngFor ="let card of kingdomCards" [card]="card" [selected]="card === selectedCard" (click)="onSelect(card)" ></app-card>
+    <div id = "presets">
+      <mat-form-field>
+        <mat-label>Reccomended Sets</mat-label>
+        <mat-select [(value)]="selectedPreset" (selectionChange)="selectPreset()">
+          <mat-option *ngFor="let preset of presets" [value]="preset">
+            {{preset}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div id = "kingdomCards">
+      <app-card  *ngFor ="let card of kingdomCards" [card]="card" [selected]="game.setupSelectedCards.indexOf(card.cardType) >= 0" (click)="onSelect(card)" ></app-card>
     </div>
   </mat-card-content>
 </mat-card>
