@@ -1,7 +1,9 @@
-import { Player } from "./player";
+import { Player, GainLocation, PlayerState } from "./player";
 import { Card } from "./card";
 import { CardLibrary } from "./card-library";
 import { CardDefinition } from "./card-definition";
+import { Estate } from "./CardDefinitions/estate";
+import { Copper } from "./CardDefinitions/copper";
 
 export enum GameState {
     Setup = 'setup',
@@ -13,7 +15,9 @@ export class Game {
     public state: GameState;
     public name: string;
     public players: Player[];
+    public currentPlayer: number;
     public shop: Record<string, Card[]>;
+    public trash: Card[];
 
     public setupSelectedCards: string[];
     public setupPreset: string;
@@ -24,10 +28,13 @@ export class Game {
         this.name = gameName;
         this.state = GameState.Setup;
         this.players = [];
+        this.currentPlayer = -1;
         this.shop = {};
+        this.trash = [];
 
         this.setupSelectedCards = [];
         this.setupPreset = '';
+
 
         this.library = new CardLibrary;
     }
@@ -37,8 +44,10 @@ export class Game {
         this.state = newState;
     }
 
-    public addPlayer(newPlayer: Player){
+    public addPlayer(playerName: string, playerColor: string, socketId: any) : Player{
+        const newPlayer: Player = new Player(playerName, playerColor, socketId, this.players.length);
         this.players.push(newPlayer);
+        return newPlayer;
     }
 
     public removePlayer(remove: Player)
@@ -179,6 +188,38 @@ export class Game {
             }
         }
 
+        for(const player of this.players)
+        {
+            //add 3 estates
+            for(let i = 0; i < 3; i++)
+            {
+                const estate: Card | undefined = this.shop[Estate.cardName].pop();
+                if(estate !== undefined)
+                {
+                    player.gain(GainLocation.deck, estate);
+                }
+            }
+
+            //add 7 coppers
+            for(let i = 0; i < 7; i++)
+            {
+                const estate: Card | undefined = this.shop[Copper.cardName].pop();
+                if(estate !== undefined)
+                {
+                    player.gain(GainLocation.deck, estate);
+                }
+            }
+
+            // now that we have our starting deck, shuffle and draw 5
+            player.shuffle();
+
+            player.draw(5);
+        }
+
+        // pick a starting player
+        this.currentPlayer = Math.floor(Math.random() * this.players.length);
+        this.players[this.currentPlayer].setState(PlayerState.Action);
+        
         this.setGameState(GameState.PlayGame);
         return true;
     }

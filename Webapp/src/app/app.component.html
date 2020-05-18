@@ -1,2 +1,3 @@
-<app-join-game *ngIf="gameName === ''"></app-join-game>
-<app-play-game *ngIf="gameName !== ''"></app-play-game>
+<app-join-game *ngIf="game === undefined"></app-join-game>
+<app-setup-game *ngIf="game != undefined && game.state === 'setup' "></app-setup-game>
+<app-play-game *ngIf="game != undefined && game.state === 'play' "></app-play-game>

@@ -22,6 +22,7 @@ constructor(private socket: Socket, private statusService: StatusService) {
       if (this.game !== undefined)
       {
         this.game = game;
+        this.player = game.players[this.player.index];
         this.gameSubject.next(this.game);
       }
    });

@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 
 import { AppComponent } from './app.component';
-import { HandComponent } from './hand/hand.component';
+
 import { CardComponent } from './card/card.component';
 import { HttpClientModule } from '@angular/common/http';
 import { JoinGameComponent } from './join-game/join-game.component';
@@ -23,6 +23,7 @@ import {  MatSidenavModule } from '@angular/material/sidenav';
 import {  MatListModule } from '@angular/material/list';
 import { SetupGameComponent } from './setup-game/setup-game.component';
 import {MatSelectModule} from '@angular/material/select';
+import { PlayerComponent } from './player/player.component';
 
 const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
 
@@ -30,12 +31,12 @@ const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
 @NgModule({
    declarations: [
       AppComponent,
-      HandComponent,
       CardComponent,
       JoinGameComponent,
       PlayGameComponent,
       BannerComponent,
-      SetupGameComponent
+      SetupGameComponent,
+      PlayerComponent
    ],
    imports: [
       BrowserModule,

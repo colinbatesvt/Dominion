@@ -97,8 +97,7 @@ export class GameManager
             let newPlayer: Player;
             if(reconnectedPlayer === undefined)
             {
-              newPlayer = new Player(data.playerName, data.playerColor, connectedSocket.id);
-              joinGame.addPlayer(newPlayer);
+               newPlayer = joinGame.addPlayer(data.playerName, data.playerColor, connectedSocket.id);
             }
             else
             {

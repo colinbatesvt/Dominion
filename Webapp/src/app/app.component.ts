@@ -10,17 +10,18 @@ import { Game } from '../../../Common/src/game';
 
 export class AppComponent implements OnInit{
   title = 'Dominion';
-  gameName: string;
+  game: Game;
 
   constructor(public gameService: GameService) {
-    this.gameName = '';
   }
 
   ngOnInit() {
     this.gameService.onGameChanged().subscribe((game: Game) => {
-      this.gameName = game.name;
+      this.game = game;
     });
-    this.gameService.createGame('Colin', '#000000', 'Test Game');
+
+    // test code to skip doing this every run
+    this.gameService.createGame('Colin', '#0000FF', 'Test Game');
   }
 }
 
