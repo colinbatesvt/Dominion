@@ -13,7 +13,6 @@ export class PlayerComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    console.log(this.player);
   }
 
 }

@@ -3,4 +3,6 @@
 body {
     display: block;
     background:lightgray;
+    width: calc(100% - 16px); 
+    height: calc(100% - 16px);
 }

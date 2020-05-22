@@ -1,2 +1,8 @@
 
-<app-card *ngFor="let card of player.hand" [card]="card" [selected]="false" ></app-card>
+<div id="playerArea">
+    <app-card-pile id="deck" [cards]="player.deck" [revealed] = "false"></app-card-pile>
+    <div id ="hand">
+        <app-card *ngFor="let card of player.hand" [card]="card" [selected]="false" ></app-card>
+    </div>
+    <app-card-pile id="discard" [cards]="player.discard" [revealed] = "true"></app-card-pile>
+</div>

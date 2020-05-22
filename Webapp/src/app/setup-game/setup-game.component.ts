@@ -28,7 +28,6 @@ export class SetupGameComponent implements OnInit {
     this.getCards();
 
     this.presets = this.library.getPresetNames();
-    console.log(this.presets);
     this.game = this.gameService.getGame();
     this.gameService.onGameChanged().subscribe((game: Game) => {
       this.game = game;

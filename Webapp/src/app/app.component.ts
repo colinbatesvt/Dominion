@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { GameService } from './game.service';
 import { Game } from '../../../Common/src/game';
+import { Card } from '../../../Common/src/card';
 
 @Component({
   selector: 'app-root',
@@ -11,6 +12,7 @@ import { Game } from '../../../Common/src/game';
 export class AppComponent implements OnInit{
   title = 'Dominion';
   game: Game;
+  selectedCard: Card;
 
   constructor(public gameService: GameService) {
   }
@@ -20,8 +22,17 @@ export class AppComponent implements OnInit{
       this.game = game;
     });
 
-    // test code to skip doing this every run
-    this.gameService.createGame('Colin', '#0000FF', 'Test Game');
+    this.gameService.onSelectedCardChanged().subscribe((selectedCard: Card) => {
+      this.selectedCard = selectedCard;
+      console.log(this.selectedCard);
+    });
+
+    // TEST CODE
+    // this.gameService.createGame('Colin', '#FFFFFF', 'Test Game');
+  }
+
+  onCloseSelected() {
+    this.gameService.onCardSelected(undefined);
   }
 }
 

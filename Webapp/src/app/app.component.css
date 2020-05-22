@@ -1,16 +1,50 @@
-app-chat {
-  float: right;
-  width: 20%;
-  height: 80%
+* {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
 app-play-game {
-  height: 80%;
-  width: 100%;
+  height: auto;
+  width: auto;
 }
 
-app-hand {
-  border: 1px solid black;
-  height: 20%;
+#selectedCard {
+  position: absolute;
   width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  z-index: 10 /*just to make sure its on top*/;
+}
+
+#grayOut {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(125, 125, 125, 0.7);
+  
+}
+
+#card {
+  position: absolute;
+  height: 50%;
+  width: auto;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#close {
+  background-color: red;
+  color:black;
+  border-radius: 50%;
+  border: solid 2px black;
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  font-size: 24px;
+  line-height: 24px;
+  text-align: center;
+
+  position: absolute;
+  left: 10%;
+  top: 10%;
 }

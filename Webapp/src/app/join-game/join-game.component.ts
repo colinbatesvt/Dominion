@@ -21,7 +21,7 @@ export class JoinGameComponent implements OnInit {
   constructor(private gameService: GameService, private statusService: StatusService) {
     this.newGameName = '';
     this.playerName = '';
-    this.playerColor = '';
+    this.playerColor = '#000000';
     this.status = '';
   }
 

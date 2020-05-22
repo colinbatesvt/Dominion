@@ -1,0 +1,25 @@
+#playerArea {
+    display: grid;
+    grid-template-columns: repeat(10, 10%);
+    grid-template-rows: 100%;
+    height: 100%;
+}
+
+#deck {
+    grid-column-start: 1;
+    grid-column-end: 1;
+    height: 100%;
+    position: relative;
+}
+
+#hand {
+    grid-column-start: 3;
+    grid-column-end: 8;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 20%);
+}
+
+#discard {
+    grid-column-start: 10;
+    grid-column-end: 10;
+}

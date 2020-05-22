@@ -1,14 +1,26 @@
 import socket from 'socket.io'
-import { GameManager } from './game-manager';
 import { Game } from '../../Common/src/game';
+import { Player, HumanPlayer } from '../../Common/src/player';
 
 export class SocketManager {
 
     private server: any;
-    private gameManager: GameManager;
-    constructor(server: any, gameManager: GameManager) {
+    // active games
+    private gameList: Game[];
+    constructor(server: any) {
             this.server = server;
-            this.gameManager = gameManager;
+            this.gameList = [];
+    }
+
+    public getGame(gameName: string) : Game
+    {
+        for(const game of this.gameList)
+        {
+            if(game.name === gameName)
+                return game;
+        }
+
+        return undefined;
     }
 
     public setupSockets() {
@@ -23,33 +35,96 @@ export class SocketManager {
             });
 
             connectedSocket.on('join-game', (data, resultCallback) => {
-                const ok = this.gameManager.joinGame(data, resultCallback, connectedSocket);
-                if(ok === true)
+                let opOk = true;
+                let opError = "";
+                const opReturnValue: any = {};
+                console.log(data.playerName + ' joining game: ' + data.gameName);
+
+                const joinGame: Game = this.gameList.find(game => game.name === data.gameName);
+                if(joinGame !== undefined)
+                {
+                    const error = joinGame.playerJoin(data.playerName, data.playerColor, connectedSocket.id);
+
+                    if(error === "")
+                    {
+                        opOk = true;
+                        opReturnValue.game = joinGame;
+                        opReturnValue.player = joinGame.findPlayerByName(data.playerName);
+                    }
+                    else
+                    {
+                        opOk = false;
+                        opError = error;
+                    }
+                }
+                else
+                {
+                    opOk = false;
+                    opError = "No game of that name";
+                }
+                resultCallback({ok: opOk, error: opError, returnValue: opReturnValue});
+                if(opOk === true)
                 {
                     connectedSocket.join(data.gameName);
                 }
-                io.sockets.emit('games-updated', this.gameManager.getGameList());
+                io.sockets.emit('games-updated', this.gameList);
             });
 
             connectedSocket.on('create-game', (gameName: string, resultCallback) => {
-                this.gameManager.createGame(gameName, resultCallback);
-                io.sockets.emit('games-updated', this.gameManager.getGameList());
+                let opError = "";
+                let opOk = true;
+                for(const game of this.gameList)
+                {
+                    if(game.name === gameName)
+                    {
+                        opError = "game with that name already exists";
+                        opOk = false;
+                    }
+                }
+
+                if(opOk === true)
+                {
+                    console.log('creating game: ' + gameName);
+                    const newGame = new Game(gameName);
+                    this.gameList.push(newGame);
+                }
+
+                resultCallback({ok: opOk, error:opError});
+                io.sockets.emit('games-updated', this.gameList);
             });
 
             connectedSocket.on('request-games-list', (data, resultCallback) => {
                 resultCallback({ok: true});
-                connectedSocket.emit('games-updated', this.gameManager.getGameList());
+                connectedSocket.emit('games-updated', this.gameList);
             });
 
             connectedSocket.on('disconnect', () => {
                 console.log('player left');
-                this.gameManager.onDisconnect(connectedSocket);
-                io.sockets.emit('games-updated', this.gameManager.getGameList());
+                for(const game of this.gameList)
+                {
+                    const foundPlayer: Player | undefined = game.findPlayerById(connectedSocket.id);
+                    if(foundPlayer !== undefined)
+                    {
+                        if(foundPlayer instanceof HumanPlayer)
+                        {
+                            const humanPlayer = foundPlayer as HumanPlayer;
+                            console.log(foundPlayer.name + " disconnected");
+                            humanPlayer.SetConnected(false);
+                        }
+                    }
+
+                    if(game.hasNoActivePlayers())
+                    {
+                        const index = this.gameList.indexOf(game);
+                        this.gameList.splice(index);
+                    }
+                }
+                io.sockets.emit('games-updated', this.gameList);
             });
 
             connectedSocket.on('setup-card-selected', (data, resultCallback) => {
                 console.log('card selected');
-                const game: Game = this.gameManager.getGame(data.gameName);
+                const game: Game = this.getGame(data.gameName);
                 let bOk: boolean = true;
                 if(game !== undefined)
                 {
@@ -64,7 +139,7 @@ export class SocketManager {
 
             connectedSocket.on('setup-preset-selected', (data, resultCallback) => {
                 console.log('preset selected');
-                const game: Game = this.gameManager.getGame(data.gameName);
+                const game: Game = this.getGame(data.gameName);
                 let bOk: boolean = true;
                 if(game !== undefined)
                 {
@@ -79,7 +154,7 @@ export class SocketManager {
 
             connectedSocket.on('setup-player-ready', (data, resultCallback) => {
                 console.log('player ready');
-                const game: Game = this.gameManager.getGame(data.gameName);
+                const game: Game = this.getGame(data.gameName);
                 let bOk: boolean = true;
                 if(game !== undefined)
                 {
@@ -95,7 +170,7 @@ export class SocketManager {
 
             connectedSocket.on('setup-start-game', (data, resultCallback) => {
                 console.log('game start');
-                const game: Game = this.gameManager.getGame(data.gameName);
+                const game: Game = this.getGame(data.gameName);
                 let bOk: boolean = true;
                 if(game !== undefined)
                 {

@@ -1,0 +1,12 @@
+<div id= "title">
+  Shop<br>
+  <mat-divider></mat-divider>
+</div>
+<div id="container">
+  <div id="basicCards">
+    <app-card-pile *ngFor = "let item of basicCards" [cards]="item" [revealed] = "true"></app-card-pile>
+  </div>
+  <div id="kingdomCards">
+    <app-card-pile *ngFor = "let item of kingdomCards" [cards]="item" [revealed] = "true"></app-card-pile>
+  </div>
+</div>

@@ -16,7 +16,6 @@ export class PlayGameComponent implements OnInit {
   constructor(private gameService: GameService) {
     this.game = gameService.getGame();
     this.myPlayer = gameService.GetPlayer();
-
     this.gameService.onGameChanged().subscribe((game: Game) => {
       this.game = game;
       this.myPlayer = game.players[this.myPlayer.index];

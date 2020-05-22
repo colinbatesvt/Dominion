@@ -1,6 +1,5 @@
 import express from 'express';
 import path from 'path'
-import { GameManager } from './game-manager';
 import { SocketManager } from './socket-manager';
 
 const app = express();
@@ -35,8 +34,7 @@ const server = app.listen(port, err => {
 });
 
 // create game data and socket handling
-const gameManager = new GameManager();
-const socketManager = new SocketManager(server, gameManager);
+const socketManager = new SocketManager(server);
 socketManager.setupSockets();
 
 

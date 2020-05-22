@@ -1,0 +1,31 @@
+#title {
+    height: 5%;
+    font-size: small;
+}
+
+#container {
+    height: 95%;
+}
+
+#basicCards { 
+    display: grid;
+    grid-template-columns: repeat(7, 10%);
+    grid-gap: 1em;
+
+    height: 25%;
+}
+
+#kingdomCards { 
+    margin-top: 1px;
+
+    display: grid;
+    grid-template-columns: repeat(5, calc(20% - 2em));
+    grid-template-rows: repeat(2, calc(50% - 1em));
+    grid-gap: 1em;
+
+    height: 75%;
+}
+
+app-card-pile {
+    height: 100%;
+}

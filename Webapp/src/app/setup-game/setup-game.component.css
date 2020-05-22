@@ -4,7 +4,6 @@
     flex-direction: column;
     margin-left: 20%;
     margin-right: 20%;
-    height: 100%;
     width: 60%;
   }
 
@@ -37,9 +36,6 @@ mat-card-content{
     display: flex;
     align-items: center;
     flex-direction: column;
-
-    
-    font-family: Roboto, "Helvetica Neue", sans-serif;
     background-color: white;
 }
 

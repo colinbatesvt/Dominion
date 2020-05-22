@@ -1,4 +1,4 @@
-import { Player, GainLocation, PlayerState } from "./player";
+import { Player, GainLocation, PlayerState, HumanPlayer } from "./player";
 import { Card } from "./card";
 import { CardLibrary } from "./card-library";
 import { CardDefinition } from "./card-definition";
@@ -44,12 +44,6 @@ export class Game {
         this.state = newState;
     }
 
-    public addPlayer(playerName: string, playerColor: string, socketId: any) : Player{
-        const newPlayer: Player = new Player(playerName, playerColor, socketId, this.players.length);
-        this.players.push(newPlayer);
-        return newPlayer;
-    }
-
     public removePlayer(remove: Player)
     {
         const index: number = this.players.indexOf(remove);
@@ -61,8 +55,12 @@ export class Game {
        let noActivePlayers: boolean = true;
        for(const player of this.players)
        {
-           if(player.connected)
-                noActivePlayers = false;
+           if(player instanceof HumanPlayer)
+           {
+               const humanPlayer: HumanPlayer = player as HumanPlayer;
+                if(humanPlayer.connected)
+                    noActivePlayers = false;
+           }
        }
        return noActivePlayers;
     }
@@ -71,8 +69,12 @@ export class Game {
     {
         for (const player of this.players)
         {
-            if(player.socketId === socketId)
-                return player;
+            if(player instanceof HumanPlayer)
+            {
+                const humanPlayer: HumanPlayer = player as HumanPlayer;
+                if(humanPlayer.socketId === socketId)
+                    return player;
+            }
         }
 
         return undefined;
@@ -87,6 +89,61 @@ export class Game {
         }
 
         return undefined;
+    }
+
+    //returns an error message or blank string on success
+    public playerJoin(playerName: string, playerColor: string, socketId : any) : string {
+        
+          // check for reconnect
+        for(const player of this.players)
+        {
+            if(player instanceof HumanPlayer)
+            {
+                const humanPlayer = player as HumanPlayer;
+                if(humanPlayer.name === playerName)
+                {
+                    if(humanPlayer.connected !== true)
+                    {
+                        humanPlayer.socketId = socketId;
+                        humanPlayer.SetConnected(true);
+                        return "";
+                    }
+                }
+            }
+        }
+        
+        //game better not be already going
+        if(this.state !== GameState.Setup)
+        {
+            return "Unable to join game, game is already in progress";
+        }
+
+        //only 4 players  in dominion
+        if(this.players.length >= 4)
+        {
+              return "Unable to join game, player limit reached";
+        }
+        
+        for(const player of this.players)
+        {
+            //player names have to be unique
+            if(player.name === playerName)
+            {
+                return "There is already a player in the selected game with that name";
+            }
+            
+            // player colors have to be unique
+            if(player.color === playerColor)
+            {
+               return "There is already a player in the selected game with that favorite color";
+            }
+        }
+
+        //we got past all the checks, let the new guy in
+        let newPlayer: HumanPlayer = new HumanPlayer(playerName, playerColor, socketId, this.players.length);
+        this.players.push(newPlayer);
+
+        return "";
     }
 
     // keep track of which cards are selected during the setup step
@@ -135,10 +192,14 @@ export class Game {
     // toggle whether the player is ready or not
     public setupPlayerReady(playerName: string) : boolean {
         const player: Player | undefined = this.findPlayerByName(playerName);
-
+    
         if(player !== undefined)
         {
-            player.setupReady = !player.setupReady;
+            if(player instanceof HumanPlayer)
+            {
+                const humanPlayer : HumanPlayer = player as HumanPlayer;
+                humanPlayer.setupReady = !player.setupReady;
+            }
             return true;
         }
         else
@@ -147,11 +208,15 @@ export class Game {
 
     public setupStartGame() : boolean {
 
-        // all players must be ready
+        // all humasn players must be ready
         for(const player of this.players)
         {
-            if(player.setupReady === false)
-                return false;
+            if(player instanceof HumanPlayer)
+            {
+                const humanPlayer : HumanPlayer = player as HumanPlayer;
+                if(humanPlayer.setupReady === false)
+                    return false;
+            }
         }
 
         // we need 10 kingdom cards
