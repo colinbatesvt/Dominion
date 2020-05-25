@@ -1,4 +1,4 @@
-import { CardDefinition } from "./card-definition";
+import { CardDefinition, CardType } from "./card-definition";
 
 export enum SubType {
     none = 'none',
@@ -15,8 +15,6 @@ export abstract class ActionCardDefinition extends CardDefinition {
         this.isKingdom = true;
         this.subType = SubType.none;
         this.startingAmount = 10;
+        this.cardType = CardType.action;
     }
-
-    abstract play() : void;
-
 }

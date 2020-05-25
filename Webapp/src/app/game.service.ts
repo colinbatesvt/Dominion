@@ -62,6 +62,11 @@ export class GameService {
       this.player = returnValue.player;
       this.game = returnValue.game;
 
+
+      this.addBot('Larry');
+      this.addBot('Moe');
+      this.addBot('Curly');
+
       this.gameSubject.next(this.game);
     });
   }
@@ -71,6 +76,13 @@ export class GameService {
     // create the game, and join it if it's created successfully
     this.sendToServer('create-game', newGameName, () => {
       this.joinGame(newPlayerName, newPlayerColor, newGameName);
+    });
+  }
+
+  public addBot(myBotName: string)
+  {
+    console.log(this.game);
+    this.sendToServer('add-bot', { gameName: this.game.name, botName: myBotName}, () => {
     });
   }
 

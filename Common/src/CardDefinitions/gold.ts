@@ -10,6 +10,6 @@ export class Gold extends TreasureCardDefinition
         this.cost = 6;
         this.startingAmount = 30;
         this.isKingdom = false;
-        this.cardImageUrl = "/assets/card_images/gold.jpg";
+        this.imageName = "gold.jpg";
     }
 }

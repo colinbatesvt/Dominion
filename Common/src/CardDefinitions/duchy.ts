@@ -9,7 +9,7 @@ export class Duchy extends VictoryCardDefinition
         this.cost = 5;
         this.startingAmount = 12;
         this.isKingdom = false;
-        this.cardImageUrl = "/assets/card_images/duchy.jpg";
+        this.imageName = "duchy.jpg";
     }
     
     GetVictoryPoints(): number {

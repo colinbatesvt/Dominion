@@ -9,6 +9,7 @@ import { Player } from '../../../../Common/src/player';
 export class PlayerComponent implements OnInit {
 
   @Input() player: Player;
+  @Input() orientation: string;
 
   constructor() { }
 

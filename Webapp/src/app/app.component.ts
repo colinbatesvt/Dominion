@@ -28,7 +28,7 @@ export class AppComponent implements OnInit{
     });
 
     // TEST CODE
-    // this.gameService.createGame('Colin', '#FFFFFF', 'Test Game');
+    this.gameService.createGame('Colin', '#0000FF', 'Test Game');
   }
 
   onCloseSelected() {

@@ -10,7 +10,7 @@ export class Province extends VictoryCardDefinition
         this.cost = 8;
         this.startingAmount = 12;
         this.isKingdom = false;
-        this.cardImageUrl = "/assets/card_images/province.jpg";
+        this.imageName = "province.jpg";
     }
     
     GetVictoryPoints(): number {

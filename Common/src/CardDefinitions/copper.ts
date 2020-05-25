@@ -10,6 +10,6 @@ export class Copper extends TreasureCardDefinition
         this.cost = 0;
         this.startingAmount = 60;
         this.isKingdom = false;
-        this.cardImageUrl = "/assets/card_images/copper.jpg";
+        this.imageName = "copper.jpg";
     }
 }

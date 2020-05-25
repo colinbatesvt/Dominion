@@ -12,6 +12,8 @@ export class CardComponent implements OnInit {
 
   @Input() card: Card;
   @Input() selected: boolean;
+  @Input() orientation: string;
+  @Input() revealed: boolean;
 
   @HostListener('click') onClick() {
     this.gameService.onCardSelected(this.card);
@@ -22,4 +24,18 @@ export class CardComponent implements OnInit {
   ngOnInit() {
   }
 
+  getImgSrc(): string {
+    let url = '/assets/card_images/';
+    url += this.orientation;
+    url += '/';
+    if (this.revealed === true)
+    {
+      url += this.card.imageName;
+    }
+    else
+    {
+      url += 'Card_Back.jpg';
+    }
+    return url;
+  }
 }

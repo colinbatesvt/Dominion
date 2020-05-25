@@ -9,7 +9,7 @@ export class Curse extends VictoryCardDefinition
         this.cost = 0; // Wow, this card is free? It must be the best!
         this.startingAmount = 30;
         this.isKingdom = false;
-        this.cardImageUrl = "/assets/card_images/curse.jpg";
+        this.imageName = "curse.jpg";
     }
     
     GetVictoryPoints(): number {

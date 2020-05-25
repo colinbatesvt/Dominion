@@ -19,18 +19,18 @@
   <button mat-button color="primary" (click)="onStart()" [disabled]="!canStart()">Start</button>
 </div>
 
-<mat-card class="content">
+<mat-card class="content" id="basicCardContainer">
   <mat-card-title>Basic Cards</mat-card-title>
   <mat-card-content>
       <div id = "basicCards">
-        <app-card  *ngFor ="let card of basicCards" [card]="card" [selected]="card === selectedCard"></app-card>
+        <app-card  *ngFor ="let card of basicCards" [card]="card" [selected]="card === selectedCard" [revealed]="true" [orientation]="'bottom'"></app-card>
       </div>
   </mat-card-content>
 </mat-card>
 
 <br>
 
-<mat-card class="content">
+<mat-card class="content" id="kingdomCardContainer">
   <mat-card-title>Kingdom Cards</mat-card-title>
   <mat-card-content>
     <div id = "presets">
@@ -44,7 +44,7 @@
       </mat-form-field>
     </div>
     <div id = "kingdomCards">
-      <app-card  *ngFor ="let card of kingdomCards" [card]="card" [selected]="game.setupSelectedCards.indexOf(card.cardType) >= 0" (click)="onSelect(card)" ></app-card>
+      <app-card  *ngFor ="let card of kingdomCards" [card]="card" [selected]="game.setupSelectedCards.indexOf(card.cardType) >= 0" (click)="onSelect(card)" [revealed]="true" [orientation]="'bottom'"></app-card>
     </div>
   </mat-card-content>
 </mat-card>

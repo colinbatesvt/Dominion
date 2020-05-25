@@ -1,25 +1,216 @@
-#playerArea {
+#bottomPlayer {
     display: grid;
     grid-template-columns: repeat(10, 10%);
     grid-template-rows: 100%;
     height: 100%;
 }
 
-#deck {
+#bottomPlayerInfo {
     grid-column-start: 1;
-    grid-column-end: 1;
+    grid-column-end: 2;
+
+    font-size:small;
+    background-color: white;
+    border-right: 1px solid black;
+}
+
+#bottomPlayerDeck {
+    grid-column-start: 2;
+    grid-column-end: 3;
     height: 100%;
+    width: 100%;
     position: relative;
 }
 
-#hand {
+#bottomPlayerRevealed {
     grid-column-start: 3;
-    grid-column-end: 8;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, 20%);
+    grid-column-end: 4;
+    height: 100%;
+    width: 100%;
+    position: relative;
 }
 
-#discard {
+#bottomPlayerHand {
+    grid-column-start: 4;
+    grid-column-end: 9;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 10%);
+}
+
+#bottomPlayerInPlay {
+    grid-column-start: 9;
+    grid-column-end: 10;
+}
+
+#bottomPlayerDiscard {
     grid-column-start: 10;
     grid-column-end: 10;
 }
+
+#leftPlayer {
+    display: grid;
+    grid-template-rows: repeat(10, 10%);
+    grid-template-columns: 100%;
+    width: 100%;
+    height:100%;
+}
+
+#leftPlayerInfo {
+    grid-row-start: 1;
+    grid-row-end: 3;
+    font-size:small;
+    
+    background-color: white;
+    border-bottom: 1px solid black;
+}
+
+#leftPlayerDeck{
+    grid-row-start: 3;
+    grid-row-end: 4;
+    height: 100%;
+    width: 100%;
+    position: relative;
+}
+
+#leftPlayerRevealed{
+    grid-row-start: 4;
+    grid-row-end: 5;
+    height: 100%;
+    width: 100%;
+    position: relative;
+}
+
+#leftPlayerHand {
+    grid-row-start: 5;
+    grid-row-end: 9;
+    display: grid;
+    height: 100%;
+    width: 100%;
+    grid-template-rows: repeat(auto-fill, 10%);
+}
+
+#leftPlayerInPlay{
+    grid-row-start: 9;
+    grid-row-end: 10;
+    height: 100%;
+    width: 100%;
+    position: relative;
+}
+
+#leftPlayerDiscard {
+    grid-row-start: 10;
+    grid-row-end: 10;
+    height: 100%;
+    width: 100%;
+}
+
+
+#topPlayer {
+    display: grid;
+    grid-template-columns: repeat(10, 10%);
+    grid-template-rows: 100%;
+    height: 100%;
+}
+
+#topPlayerDiscard {
+    grid-column-start: 1;
+    grid-column-end: 2;
+}
+
+#topPlayerInPlay {
+    grid-column-start: 2;
+    grid-column-end: 3;
+}
+
+#topPlayerHand {
+    grid-column-start: 3;
+    grid-column-end: 8;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 5%);
+}
+
+#topPlayerRevealed {
+    grid-column-start: 8;
+    grid-column-end: 9;
+}
+
+#topPlayerDeck {
+    grid-column-start: 9;
+    grid-column-end: 10;
+    height: 100%;
+    width: 100%;
+    position: relative;
+}
+
+#topPlayerInfo {
+    grid-column-start: 10;
+    grid-column-end: 11;
+    font-size:small;
+    
+    background-color: white;
+    border-left: 1px solid black;
+}
+
+
+
+
+
+
+
+#rightPlayer {
+    display: grid;
+    grid-template-rows: repeat(10, 10%);
+    grid-template-columns: 100%;
+    width: 100%;
+    height:100%;
+}
+
+#rightPlayerDiscard {
+    grid-row-start: 1;
+    grid-row-end: 2;
+}
+
+#topPlayerInPlay {
+    grid-column-start: 2;
+    grid-column-end: 3;
+}
+
+#rightPlayerHand {
+    grid-row-start: 3;
+    grid-row-end: 7;
+    display: grid;
+    height: 100%;
+    width: 100%;
+    grid-template-rows: repeat(auto-fill, 10%);
+}
+
+#rightPlayerRevealed {
+    grid-column-start: 7;
+    grid-column-end: 8;
+}
+
+#rightPlayerDeck{
+    grid-row-start: 8;
+    grid-row-end: 9;
+    height: 100%;
+    width: 100%;
+    position: relative;
+}
+
+#rightPlayerInfo {
+    grid-row-start: 9;
+    grid-row-end: 11;
+    font-size:small;
+    
+    background-color: white;
+    border-top: 1px solid black;
+}
+
+
+
+
+
+
+
+
+

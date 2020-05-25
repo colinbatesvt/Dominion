@@ -1,6 +1,10 @@
+import { CardType } from "./card-definition";
+
 export interface Card {
     id: number;
-    cardType: string;
+    name: string;
     isKingdom: boolean;
-    url: string;
+    imageName: string;
+    type: CardType;
+    revealedToOthers: boolean;
 }

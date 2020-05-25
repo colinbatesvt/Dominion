@@ -1,7 +1,7 @@
 #game{
     display: grid;
-    grid-template-columns: repeat(5, 20%);
-    grid-template-rows: repeat(5, 20%);
+    grid-template-columns: repeat(10, 10%);
+    grid-template-rows: repeat(10, 10%);
 
     width: 100%;
     height: 100%;
@@ -9,50 +9,47 @@
     border: 1px solid purple;
 }
 
-#player2{
+#leftPlayer{
     grid-column-start: 1;
     grid-column-end: 1;
-    grid-row-start:1;
-    grid-row-end:6;
+    grid-row-start:2;
+    grid-row-end:11;
 
-    background-color: red;
     border: 1px solid black;
 }
 
-#player3{
+#topPlayer{
     grid-column-start: 1;
-    grid-column-end: 5;
+    grid-column-end: 10;
     grid-row-start:1;
-    grid-row-end:1;
+    grid-row-end:2;
     
-    background-color: green;
     border: 1px solid black;
 }
 
-#player4{
-    grid-column-start: 5;
-    grid-column-end: 5;
+#rightPlayer{
+    grid-column-start: 10;
+    grid-column-end: 10;
     grid-row-start:1;
-    grid-row-end:5;
+    grid-row-end:9;
 
-    background-color: blue;
     border: 1px solid black;
 }
 
 #myPlayer {
     grid-column-start: 2;
-    grid-column-end: 6;
-    grid-row-start:5;
-    grid-row-end:5;
+    grid-column-end: 11;
+    grid-row-start:9;
+    grid-row-end:11;
 
     border: 1px solid black;
 }
 
 #shop {
     grid-column-start: 2;
-    grid-column-end: 5;
+    grid-column-end: 10;
     grid-row-start:2;
-    grid-row-end:5;
+    grid-row-end:9;
 
     margin: 8px;
 }

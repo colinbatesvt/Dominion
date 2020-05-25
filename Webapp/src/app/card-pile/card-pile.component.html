@@ -1,2 +1,7 @@
-<img *ngIf="revealed === true && cards.length > 0" src = "{{cards[0].url}}">
-<img *ngIf="revealed === false" src = "/assets/card_images/Card_Back.jpg">
+<img  *ngIf="cards.length > 0" 
+[ngClass]="{
+    'bottom': orientation==='bottom',
+    'left': orientation==='left',
+    'top': orientation==='top',
+    'right': orientation==='right'
+ }"  src = "{{getImgSrc()}}">

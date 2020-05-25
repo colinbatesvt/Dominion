@@ -1,12 +1,12 @@
 
 <div id="game">
     <!-- Player areas on each side of the screen-->
-    <div id="player2"><p class="content">Player 2</p></div>
-    <div id="player3"><p class="content">Player 3</p></div>
-    <div id="player4"><p class="content">Player 4</p></div>
+    <app-player id="leftPlayer" [player]="leftPlayer" [orientation]="'left'"></app-player>
+    <app-player id="topPlayer" [player]="topPlayer" [orientation]="'top'"></app-player>
+    <app-player id="rightPlayer" [player]="rightPlayer" [orientation]="'right'"></app-player>
 
     <!-- your player on bottom-->
-    <app-player id="myPlayer" [player]="myPlayer"></app-player>
+    <app-player id="myPlayer" [player]="myPlayer" [orientation]="'bottom'"></app-player>
 
     <!-- Shop in the middle -->
     <app-shop id = "shop" [shop]="game.shop"></app-shop>

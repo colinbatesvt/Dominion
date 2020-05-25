@@ -1,1 +1,6 @@
-<img src="{{card.url}}" [class.selected]="selected" [class.unselected]="!selected">
+<img src="{{getImgSrc()}}" [class.selected]="selected" [class.unselected]="!selected" [ngClass]="{
+    'bottom': orientation==='bottom',
+    'left': orientation==='left',
+    'top': orientation==='top',
+    'right': orientation==='right'
+ }" >

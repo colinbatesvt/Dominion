@@ -36,7 +36,7 @@ export class SetupGameComponent implements OnInit {
   }
 
   onSelect(card: Card): void {
-    this.gameService.setupSelectCard(card.cardType);
+    this.gameService.setupSelectCard(card.name);
   }
 
   getCards(): void {

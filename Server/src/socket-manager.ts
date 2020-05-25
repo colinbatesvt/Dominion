@@ -93,6 +93,30 @@ export class SocketManager {
                 io.sockets.emit('games-updated', this.gameList);
             });
 
+            connectedSocket.on('add-bot', (data, resultCallback) => {
+                let opOk = true;
+                let opError = "";
+
+                const game: Game = this.getGame(data.gameName);
+                if(game !== undefined)
+                {
+                    const error = game.addBot(data.botName);
+                    if(error !== "")
+                    {
+                        opOk = false;
+                        opError = error;
+                    }
+                }
+                else
+                {
+                    opOk = false;
+                    opError = "No game with that name";
+                }
+
+                resultCallback({ok: opOk, error:opError});
+                io.sockets.emit('games-updated', this.gameList);
+            });
+
             connectedSocket.on('request-games-list', (data, resultCallback) => {
                 resultCallback({ok: true});
                 connectedSocket.emit('games-updated', this.gameList);

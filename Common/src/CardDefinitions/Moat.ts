@@ -1,4 +1,6 @@
 import { ActionCardDefinition, SubType } from "../action-card-definition";
+import { Game } from "../game";
+import { Player } from "../player";
 
 export class Moat extends ActionCardDefinition
 {
@@ -8,12 +10,12 @@ export class Moat extends ActionCardDefinition
         super();
         this.cost = 2;
         this.subType = SubType.reaction;
-        this.cardImageUrl = "/assets/card_images/moat.jpg";
+        this.imageName = "moat.jpg";
     }
 
-    play() {
+    public execute(game: Game, player: Player) {
         // + 2 cards
-
+        player.draw(2);
         // when another player plays an attack card you may first reveal this from your hand, to be unaffected by it.
     }
 }

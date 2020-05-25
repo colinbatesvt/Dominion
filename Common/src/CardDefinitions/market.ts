@@ -1,4 +1,6 @@
 import { ActionCardDefinition } from "../action-card-definition";
+import { Game } from "../game";
+import { Player } from "../player";
 
 export class Market extends ActionCardDefinition
 {
@@ -7,13 +9,15 @@ export class Market extends ActionCardDefinition
     public constructor() {
         super();
         this.isKingdom = true;
-        this.cardImageUrl = "/assets/card_images/market.jpg";
+        this.imageName = "market.jpg";
     }
 
-    play() {
-        // + 1 card
-        // + 1 action
-        // + 1 buy
-        // + 1 coin
+    public execute(game: Game, player: Player) {
+        player.draw(1);
+        player.actions++;
+        player.buys++;
+        player.coins++;
+
+        game.finishExecution(this);
     }
 }

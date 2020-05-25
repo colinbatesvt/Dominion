@@ -10,6 +10,6 @@ export class Silver extends TreasureCardDefinition
         this.cost = 3;
         this.startingAmount = 40;
         this.isKingdom = false;
-        this.cardImageUrl = "/assets/card_images/silver.jpg";
+        this.imageName = "silver.jpg";
     }
 }

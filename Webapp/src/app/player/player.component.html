@@ -1,8 +1,64 @@
 
-<div id="playerArea">
-    <app-card-pile id="deck" [cards]="player.deck" [revealed] = "false"></app-card-pile>
-    <div id ="hand">
-        <app-card *ngFor="let card of player.hand" [card]="card" [selected]="false" ></app-card>
+<div id="bottomPlayer" *ngIf = "orientation === 'bottom'">
+    <div id= "bottomPlayerInfo">
+        {{player.name}}<br>
+        Actions: {{player.actions}}<br>
+        Buys: {{player.buys}}<br>
+        Coins: {{player.coins}}<br>
     </div>
-    <app-card-pile id="discard" [cards]="player.discard" [revealed] = "true"></app-card-pile>
+    <app-card-pile id="bottomPlayerDeck" [cards]="player.deck" [revealed] = "false" [orientation] ="'bottom'"></app-card-pile>
+    <app-card-pile id="bottomPlayerRevealed" [cards]="player.revealed" [revealed] = "true" [orientation] ="'bottom'"></app-card-pile>
+    <div id ="bottomPlayerHand">
+        <app-card *ngFor="let card of player.hand" [card]="card" [selected]="false" [revealed] = "true" [orientation] ="'bottom'"></app-card>
+    </div>
+    <app-card-pile id="bottomPlayerInPlay" [cards]="player.inPlay" [revealed] = "true" [orientation] ="'bottom'"></app-card-pile>
+    <app-card-pile id="bottomPlayerDiscard" [cards]="player.discard" [revealed] = "true" [orientation] ="'bottom'"></app-card-pile>
+</div>
+
+<div id="leftPlayer" *ngIf = "orientation === 'left'">
+    <div id= "leftPlayerInfo">
+        {{player.name}}<br>
+        Actions: {{player.actions}}<br>
+        Buys: {{player.buys}}<br>
+        Coins: {{player.coins}}<br>
+    </div>
+    <app-card-pile id="leftPlayerDeck" [cards]="player.deck" [revealed] = "false" [orientation] ="'left'"></app-card-pile>
+    <app-card-pile id="leftPlayerRevealed" [cards]="player.revealed" [revealed] = "true" [orientation] ="'left'"></app-card-pile>
+    <div id ="leftPlayerHand">
+        <app-card *ngFor="let card of player.hand" [card]="card" [selected]="false" [revealed] = "false" [orientation]="'left'"></app-card>
+    </div>
+    <app-card-pile id="leftPlayerInPlay" [cards]="player.inPlay" [revealed] = "true" [orientation] ="'left'"></app-card-pile>
+    <app-card-pile id="leftPlayerDiscard" [cards]="player.discard" [revealed] = "true" [orientation] ="'left'"></app-card-pile>
+</div>
+
+<div id="topPlayer" *ngIf = "orientation === 'top'">
+    <app-card-pile id="topPlayerDiscard" [cards]="player.discard" [revealed] = "true" [orientation] ="'top'"></app-card-pile>
+    <app-card-pile id="topPlayerInPlay" [cards]="player.inPlay" [revealed] = "true" [orientation] ="'top'"></app-card-pile>
+    <div id ="topPlayerHand">
+        <app-card *ngFor="let card of player.hand" [card]="card" [selected]="false" [revealed] = "false" [orientation]="'top'"></app-card>
+    </div>
+    <app-card-pile id="topPlayerRevealed" [cards]="player.revealed" [revealed] = "true" [orientation] ="'top'"></app-card-pile>
+    <app-card-pile id="topPlayerDeck" [cards]="player.deck" [revealed] = "false" [orientation] ="'top'"></app-card-pile>
+    <div id= "topPlayerInfo">
+        {{player.name}}<br>
+        Actions: {{player.actions}}<br>
+        Buys: {{player.buys}}<br>
+        Coins: {{player.coins}}<br>
+    </div>
+</div>
+
+<div id="rightPlayer" *ngIf = "orientation === 'right'">
+    <app-card-pile id="rightPlayerDiscard" [cards]="player.discard" [revealed] = "true" [orientation] ="'right'"></app-card-pile>
+    <app-card-pile id="rightPlayerInPlay" [cards]="player.inPlay" [revealed] = "true" [orientation] ="'right'"></app-card-pile>
+    <div id ="rightPlayerHand">
+        <app-card *ngFor="let card of player.hand" [card]="card" [selected]="false" [revealed] = "false" [orientation]="'right'"></app-card>
+    </div>
+    <app-card-pile id="rightPlayerRevealed" [cards]="player.revealed" [revealed] = "true" [orientation] ="'top'"></app-card-pile>
+    <app-card-pile id="rightPlayerDeck" [cards]="player.deck" [revealed] = "false" [orientation] ="'right'"></app-card-pile>
+    <div id= "rightPlayerInfo">
+        {{player.name}}<br>
+        Actions: {{player.actions}}<br>
+        Buys: {{player.buys}}<br>
+        Coins: {{player.coins}}<br>
+    </div>
 </div>

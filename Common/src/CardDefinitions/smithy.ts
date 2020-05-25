@@ -1,4 +1,6 @@
 import { ActionCardDefinition } from "../action-card-definition";
+import { Game } from "../game";
+import { Player } from "../player";
 
 export class Smithy extends ActionCardDefinition
 {
@@ -7,10 +9,11 @@ export class Smithy extends ActionCardDefinition
     public constructor() {
         super();
         this.cost = 4;
-        this.cardImageUrl = "/assets/card_images/smithy.jpg";
+        this.imageName = "smithy.jpg";
     }
 
-    play() {
+    public execute(game: Game, player: Player) {
         // + 3 cards
+        player.draw(3);
     }
 }

@@ -5,6 +5,6 @@
 <div id = "selectedCard" *ngIf = "selectedCard != undefined">
     <div id = "grayOut">
         <h1 id="close" (click)="onCloseSelected()">X</h1>
-        <img id = "card" src = {{selectedCard.url}}>
+        <app-card id = "card" [card] = "selectedCard" [selected]="false" [orientation]="'bottom'" [revealed]="true"></app-card>
     </div>
 </div>

@@ -1,4 +1,6 @@
 import { ActionCardDefinition } from "../action-card-definition";
+import { Game } from "../game";
+import { Player } from "../player";
 
 export class Village extends ActionCardDefinition
 {
@@ -6,11 +8,13 @@ export class Village extends ActionCardDefinition
     public constructor() {
         super();
         this.cost = 3;
-        this.cardImageUrl = "/assets/card_images/village.jpg";
+        this.imageName = "village.jpg";
     }
 
-    play() {
+    public execute(game: Game, player: Player) {
         // + 1 card
+        player.draw(1);
         // + 2 actions
+        player.actions += 2;
     }
 }
