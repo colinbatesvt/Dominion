@@ -1,13 +1,19 @@
 
+<div id = "status">
+    {{status}}
+    <button mat-button *ngFor="let prompt of myPlayer.userPrompts" (click)="onPromptClicked(prompt)">{{prompt}}</button>
+    <mat-divider></mat-divider>
+</div>
+
 <div id="game">
     <!-- Player areas on each side of the screen-->
-    <app-player id="leftPlayer" [player]="leftPlayer" [orientation]="'left'"></app-player>
-    <app-player id="topPlayer" [player]="topPlayer" [orientation]="'top'"></app-player>
-    <app-player id="rightPlayer" [player]="rightPlayer" [orientation]="'right'"></app-player>
+    <app-player id="leftPlayer" *ngIf="leftPlayer !== undefined" [player]="leftPlayer" [orientation]="'left'"></app-player>
+    <app-player id="topPlayer" *ngIf="topPlayer !== undefined" [player]="topPlayer" [orientation]="'top'"></app-player>
+    <app-player id="rightPlayer" *ngIf="rightPlayer !== undefined" [player]="rightPlayer" [orientation]="'right'"></app-player>
 
     <!-- your player on bottom-->
     <app-player id="myPlayer" [player]="myPlayer" [orientation]="'bottom'"></app-player>
 
     <!-- Shop in the middle -->
-    <app-shop id = "shop" [shop]="game.shop"></app-shop>
+    <app-shop id = "shop" ></app-shop>
 </div>

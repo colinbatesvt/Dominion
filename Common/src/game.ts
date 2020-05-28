@@ -4,6 +4,7 @@ import { CardLibrary } from "./card-library";
 import { CardDefinition, CardType } from "./card-definition";
 import { Estate } from "./CardDefinitions/estate";
 import { Copper } from "./CardDefinitions/copper";
+import { ServerInterface } from "./server-interface";
 
 export enum GameState {
     Setup = 'setup',
@@ -25,7 +26,7 @@ export class Game {
     public library: CardLibrary;
     public executingCards: CardDefinition[];
 
-    constructor(gameName: string) {
+    constructor(gameName: string, serverCallback: (game: Game) => void) {
         this.name = gameName;
         this.state = GameState.Setup;
         this.players = [];
@@ -35,7 +36,6 @@ export class Game {
 
         this.setupSelectedCards = [];
         this.setupPreset = '';
-
 
         this.library = new CardLibrary;
         this.executingCards = [];
@@ -151,6 +151,9 @@ export class Game {
     //returns an error message or blank string on success
     public addBot(botName: string) : string
     {
+        //disable bots for now, getting this to work with socketio is going to be complicated
+        return "";
+        /*
         const foundPlayer: Player | undefined = this.findPlayerByName(botName);
 
         //name needs to be unique
@@ -187,7 +190,9 @@ export class Game {
 
         const bot: AIPlayer = new AIPlayer(botName, color, this.players.length, this);
         this.players.push(bot);
+        console.log("added bot: " + botName);
         return "";
+        */
     }
 
     public getRandomColor() : string{
@@ -335,67 +340,79 @@ export class Game {
         }
 
         // pick a starting player
-        this.currentPlayer = Math.floor(Math.random() * this.players.length);
-        this.players[this.currentPlayer].setState(PlayerState.Action);
         
+        this.currentPlayer = Math.floor(Math.random() * this.players.length);
+        
+        this.players[this.currentPlayer].actions= 1;
+        this.players[this.currentPlayer].buys = 1;
+        this.players[this.currentPlayer].coins = 0;
+
         this.setGameState(GameState.PlayGame);
-        this.checkState();
         return true;
     }
 
     public trashCard(card: Card) {
-        this.trash.push(card);
+        this.trash.unshift(card);
     }
-    // see if the current phase is over and we can move to the next one
-    public checkState() {
+    
+
+    public advanceGame() {
+
+        let waitingForPlayer = false;
         
-        const currentPlayer: Player = this.players[this.currentPlayer];
-
-        // they are still waiting, give them something to do
-        if(currentPlayer.state === PlayerState.WaitingForTurn)
+        while(waitingForPlayer === false) 
         {
-            this.advanceGame();
-        }
+            const currentPlayer: Player = this.players[this.currentPlayer];
 
-        else if (currentPlayer.state === PlayerState.Action)
-        {
-            //if the current player has used up all their actions, move to buy phase
-            if(currentPlayer.actions === 0)
+            //get ready of anything currently executing
+            for(let i = this.executingCards.length - 1; i >= 0; i--)
             {
-                this.advanceGame();
-                return;
+                const card: CardDefinition = this.executingCards[i];
+                this.finishExecution(card);
             }
 
-            //if the current player has no actions in their hand move to buy phase
-            if(currentPlayer.typeAmountInHand(CardType.action) === 0)
+            // they are still waiting, give them something to do
+            if(currentPlayer.state === PlayerState.WaitingForTurn)
             {
-                this.advanceGame();
-                return;
-            }
-        }
-
-        else if (currentPlayer.state === PlayerState.Buy)
-        {
-            //no buys, move on
-            if(currentPlayer.buys === 0)
-            {
-                this.advanceGame();
-                return;
+                currentPlayer.setState(PlayerState.Action, this);
             }
 
-            //the game always ends after buying something, so check if it's over here
-            if(this.checkGameOver())
+            else if (currentPlayer.state === PlayerState.Action)
             {
-                //Game Over! show the end screen
-                this.state = GameState.GameOver;
+                currentPlayer.setState(PlayerState.Buy, this);
             }
-        }
 
-        else if (currentPlayer.state === PlayerState.CleanUp)
-        {
-            //nothing for user/AI to do, just auto clean up
-            currentPlayer.cleanUp();
-            this.advanceGame();
+            else if (currentPlayer.state === PlayerState.Buy)
+            {
+                 //the game always ends after buying something, so check if it's over here
+                 if(this.checkGameOver())
+                 {
+                     //Game Over! show the end screen
+                     this.state = GameState.GameOver;
+                 }
+                 
+                currentPlayer.setState(PlayerState.CleanUp, this);
+
+            }
+
+            else if (currentPlayer.state === PlayerState.CleanUp)
+            {
+                //nothing for user/AI to do, just auto clean up
+                currentPlayer.cleanUp();
+                currentPlayer.setState(PlayerState.WaitingForTurn, this);
+                this.currentPlayer = (this.currentPlayer + 1) % this.players.length;// after clean up, move to the next player
+                //you get 1 action, 1 buy, and no coins to start your turn
+                this.players[this.currentPlayer].setState(PlayerState.Action, this);
+                currentPlayer.actions= 1;
+                currentPlayer.buys = 1;
+                currentPlayer.coins = 0;
+            }
+
+            currentPlayer.addStateActions(this);
+
+            //if we need to wait for huiman action, get out of here
+            if(currentPlayer.userSelections.length > 0 && currentPlayer instanceof HumanPlayer)
+                waitingForPlayer = true;
         }
     }
 
@@ -418,37 +435,6 @@ export class Game {
         return gameOver;
     }
 
-    // move the current player to the next phase, or if the current player's turn is over, move to the next player
-    public advanceGame() {
-
-        const currentPlayer: Player = this.players[this.currentPlayer];
-
-        if(currentPlayer.state === PlayerState.WaitingForTurn)
-        {
-            currentPlayer.setState(PlayerState.Action);
-            this.checkState();
-        }
-
-        else if (currentPlayer.state === PlayerState.Action)
-        {
-           currentPlayer.setState(PlayerState.Buy);
-           this.checkState();
-        }
-
-        else if (currentPlayer.state === PlayerState.Buy)
-        {
-           currentPlayer.setState(PlayerState.CleanUp);
-           this.checkState();
-        }
-
-        else if(currentPlayer.state === PlayerState.CleanUp)
-        {
-           this.currentPlayer = (this.currentPlayer + 1) % this.players.length;// after clean up, move to the next player
-           this.players[this.currentPlayer].setState(PlayerState.Action);
-           this.checkState();
-        }
-    }
-
     //a player chose something, decide what to do with it
     onCardsSelected(playerIndex: number, cards: Card[]): boolean
     {
@@ -463,86 +449,101 @@ export class Game {
         //determine what to do with the selection based on turn phase
         else if(player.state == PlayerState.Action)
         {
-            //1 card selected at a time
-            const card: Card = cards[0];
-
-            //the user chose to play this action card
-            const cardDefinition: CardDefinition = this.library.getCardDefinition(card.name);
-
-            if(cardDefinition.cardType === CardType.action)
+            if(cards.length > 0)
             {
-                this.executingCards.push(cardDefinition);
-                player.actions--;
+                //1 card selected at a time
+                const card: Card = cards[0];
 
-                //remove card from hand, put it in play
-                let index = -1;
-                for(let i = 0; i < player.hand.length; i++)
+                //card better be in your hand
+                for(const handCard of player.hand)
                 {
-                    if(player.hand[i].id === card.id)
-                        index = i;
-                }
-                player.hand.splice(index);
-                player.inPlay.push(card);
+                    if(handCard.id === card.id && card.type === CardType.action)
+                    {
+                        //the user chose to play this action card
+                        const cardDefinition: CardDefinition = this.library.getCardDefinition(card.name);
 
-                cardDefinition.execute(this, player);
-            }
-            else
-            {
-                return false;
+                        if(cardDefinition.cardType === CardType.action)
+                        {
+                            this.executingCards.push(cardDefinition);
+                            player.actions--;
+
+                            //remove card from hand, put it in play
+                            let index = -1;
+                            for(let i = 0; i < player.hand.length; i++)
+                            {
+                                if(player.hand[i].id === card.id)
+                                    index = i;
+                            }
+                            player.hand.splice(index, 1);
+                            player.inPlay.unshift(card);
+
+                            cardDefinition.execute(this, player);
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                }
             }
         }
         else if(player.state == PlayerState.Buy)
         {
-             //1 card selected at a time
-             const card: Card = cards[0];
-
-            //if this is a card in the players hand, and it's a treasure card, play it
-            for(const handCard of player.hand)
+            if(cards.length > 0)
             {
-                if(handCard.id === card.id && card.type === CardType.action)
+                //1 card selected at a time
+                const card: Card = cards[0];
+
+                //if this is a card in the players hand, and it's a treasure card, play it
+                for(const handCard of player.hand)
                 {
-                    const treasureCardDefinition : CardDefinition = this.library.getCardDefinition(card.name);
-                    this.executingCards.push(treasureCardDefinition);
-                    
-                      //remove card from hand, put it in play
-                    let index = -1;
-                    for(let i = 0; i < player.hand.length; i++)
+                    if(handCard.id === card.id && card.type === CardType.treasure)
                     {
-                    if(player.hand[i].id === card.id)
-                        index = i;
+                        const treasureCardDefinition : CardDefinition = this.library.getCardDefinition(card.name);
+                        this.executingCards.push(treasureCardDefinition);
+
+                        //remove card from hand, put it in play
+                        let index = -1;
+                        for(let i = 0; i < player.hand.length; i++)
+                        {
+                        if(player.hand[i].id === card.id)
+                            index = i;
+                        }
+                        player.hand.splice(index, 1);
+                        player.inPlay.unshift(card);
+
+                        treasureCardDefinition.execute(this, player);
                     }
-                    player.hand.splice(index);
-                    player.inPlay.push(card);
+                }
 
-                    treasureCardDefinition.execute(this, player);
+                //if this is a card in the shop, buy it
+                //we know the card is in the shop if it is the top card of it's buy pile
+                if(this.shop[card.name][0].id === card.id)
+                {
+                    const cost: number = this.library.getCardDefinition(card.name).cost;
+
+                    if(player.coins >= cost)
+                    {
+                        this.shop[card.name].splice(0, 1);
+                        player.gain(Location.discard, card);
+                        player.coins -= cost;
+                        player.buys--;
+                    }
+                    else 
+                    {
+                        return false;
+                    }
                 }
             }
-
-            //if this is a card in the shop, buy it
-            //we know the card is in the shop if it is the top card of it's buy pile
-            if(this.shop[card.name][0].id = card.id)
-            {
-                const cost: number = this.library.getCardDefinition(card.name).cost;
-
-                if(player.coins >= cost)
-                {
-                    this.shop[card.name].splice(0);
-                    player.gain(Location.discard, card);
-                    player.coins -= cost;
-                    player.buys--;
-                }
-                else 
-                {
-                    return false;
-                }
-            }
-            
         }
-
-        //see if we can advance
-        this.checkState();
-
         return true;
+    }
+
+    onPromptClicked(playerIndex: number, prompt: string) {
+        if(prompt == 'done')
+        {
+            this.advanceGame();
+        }
     }
 
     //called by a card definition when execution is finished
@@ -552,7 +553,7 @@ export class Game {
         // this better be the same card, things can't finish out of order
         if(current.getCardName() === finishing.getCardName())
         {
-            this.executingCards.splice(this.executingCards.length - 1);
+            this.executingCards.splice(this.executingCards.length - 1, 1);
         }
 
         else

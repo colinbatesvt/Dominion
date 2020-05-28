@@ -16,5 +16,6 @@ export class Village extends ActionCardDefinition
         player.draw(1);
         // + 2 actions
         player.actions += 2;
+        game.finishExecution(this);
     }
 }

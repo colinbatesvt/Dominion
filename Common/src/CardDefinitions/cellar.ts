@@ -22,7 +22,7 @@ export class Cellar extends ActionCardDefinition
         const pickDiscard: UserSelection = {location: Location.hand, isValid: (card: Card) => {return true;}, count: -1};
         let selections: UserSelection[] = [];
         selections.push(pickDiscard);
-        player.userSelections.push(selections);
+        player.addSelection(selections, game);
     }
 
     public onSelection(game: Game, player: Player, cards: Card[]) : boolean{
@@ -55,7 +55,7 @@ export class Cellar extends ActionCardDefinition
             }
 
             player.draw(cards.length);    
-            player.userSelections.splice(player.userSelections.length - 1);
+            player.userSelections.splice(player.userSelections.length - 1, 1);
             game.finishExecution(this);
         }
         return true;

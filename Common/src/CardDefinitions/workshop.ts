@@ -18,12 +18,12 @@ export class Workshop extends ActionCardDefinition
         // gain a card costing up to 4
 
         const selection: UserSelection[] = [];
-        const trash: UserSelection = {location: Location.shop, isValid: (card: Card) => {
+        const gain: UserSelection = {location: Location.shop, isValid: (card: Card) => {
             const library: CardLibrary = new CardLibrary;
             return library.getCardDefinition(card.name).cost <= 4;
         }, count: 1}
-        selection.push(trash)
-        player.userSelections.push(selection);
+        selection.push(gain)
+        player.addSelection(selection, game);
     }
 
     public onSelection(game: Game, player: Player, cards: Card[]) : boolean{
@@ -33,8 +33,8 @@ export class Workshop extends ActionCardDefinition
         if(game.shop[gainCard.name][0].id === gainCard.id)
         {
             player.gain(Location.discard, gainCard);
-            game.shop[gainCard.name].splice(0);
-            player.userSelections.splice(player.userSelections.length -1);
+            game.shop[gainCard.name].splice(0, 1);
+            player.userSelections.splice(player.userSelections.length -1, 1);
             game.finishExecution(this);
         }
 

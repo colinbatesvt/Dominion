@@ -17,5 +17,6 @@ export class Moat extends ActionCardDefinition
         // + 2 cards
         player.draw(2);
         // when another player plays an attack card you may first reveal this from your hand, to be unaffected by it.
+        game.finishExecution(this);
     }
 }

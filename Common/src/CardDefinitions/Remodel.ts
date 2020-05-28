@@ -23,7 +23,9 @@ export class Remodel extends ActionCardDefinition
         const selection: UserSelection[] = [];
         const trash: UserSelection = {location: Location.hand, isValid: (card: Card) => {return true;}, count: 1}
         selection.push(trash)
-        player.userSelections.push(selection);
+        player.addSelection(selection, game);
+
+        this.handPick = true;
     }
 
     public onSelection(game: Game, player: Player, cards: Card[]) : boolean{
@@ -33,17 +35,21 @@ export class Remodel extends ActionCardDefinition
         {
             //selection should be a single card
             const trashCard: Card = cards[0];
-            let cardInHand = false;
-            for(const handCard of player.hand)
+            let handIndex = -1;
+            for(let i = 0; i < player.hand.length; i++)
             {
+                const handCard: Card = player.hand[i];
                 if(handCard.id === trashCard.id)
-                    cardInHand = true;
+                {
+                    handIndex = i;
+                }
             }
-            if(cardInHand === true)
+            if(handIndex !== -1)
             {
+                player.hand.splice(handIndex, 1);
                 game.trashCard(trashCard);
                 //remove this selection, add gain selection
-                player.userSelections.splice(player.userSelections.length -1);
+                player.userSelections.splice(player.userSelections.length -1, 1);
 
                 //TODO: test this, I have no idea if referencing trashCard in that function will work
                 const selection: UserSelection[] = [];
@@ -52,7 +58,7 @@ export class Remodel extends ActionCardDefinition
                     return library.getCardDefinition(card.name).cost <= library.getCardDefinition(trashCard.name).cost + 2;
                 }, count: 1}
                 selection.push(gain)
-                player.userSelections.push(selection);
+                player.addSelection(selection, game);
                 this.handPick = false;
             }
             else 
@@ -68,8 +74,8 @@ export class Remodel extends ActionCardDefinition
             if(game.shop[gainCard.name][0].id === gainCard.id)
             {
                 player.gain(Location.discard, gainCard);
-                game.shop[gainCard.name].splice(0);
-                player.userSelections.splice(player.userSelections.length -1);
+                game.shop[gainCard.name].splice(0, 1);
+                player.userSelections.splice(player.userSelections.length -1, 1);
                 game.finishExecution(this);
             }
             else

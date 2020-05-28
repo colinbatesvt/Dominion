@@ -15,5 +15,6 @@ export class Smithy extends ActionCardDefinition
     public execute(game: Game, player: Player) {
         // + 3 cards
         player.draw(3);
+        game.finishExecution(this);
     }
 }

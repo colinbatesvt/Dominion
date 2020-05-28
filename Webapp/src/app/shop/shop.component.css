@@ -9,7 +9,7 @@
 
 #basicCards { 
     display: grid;
-    grid-template-columns: repeat(7, 10%);
+    grid-template-columns: repeat(8, 10%);
     grid-gap: 1em;
 
     height: 25%;

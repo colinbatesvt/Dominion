@@ -13,10 +13,10 @@ export enum Location {
 }
 
 export enum PlayerState {
-    Action,
-    Buy,
-    CleanUp,
-    WaitingForTurn
+    Action = "action",
+    Buy = "buy",
+    CleanUp = "clean-up",
+    WaitingForTurn= "waiting"
 }
 
 export interface UserSelection {
@@ -45,6 +45,7 @@ export abstract class Player {
     public actions: number;
     public buys: number;
     public coins: number;
+    public userPrompts: string[];
 
     public userSelections: UserSelection[][]; // this is a stack of arrays that describe what the user can select right now
 
@@ -69,6 +70,7 @@ export abstract class Player {
         this.coins = 0;
 
         this.userSelections = [];
+        this.userPrompts = [];
     }
 
 
@@ -85,7 +87,7 @@ export abstract class Player {
                 break;
 
             case Location.discard:
-                this.discard.push(card)
+                this.discard.unshift(card); //add to front of discard so player can see it
                 break;
         }
     }
@@ -103,7 +105,7 @@ export abstract class Player {
             //no cards in deck, move cards from discard to deck
             else 
             {
-                for(let n = 0; n < this.discard.length; n++)
+                while(this.discard.length > 0)
                 {
                     const discardCard: Card | undefined = this.discard.pop();
                     if(discardCard !== undefined)
@@ -140,7 +142,7 @@ export abstract class Player {
         {
             if(this.hand[i].id === card.id)
             {
-                this.hand.splice(i);
+                this.hand.splice(i, 1);
             }
         }
 
@@ -151,36 +153,41 @@ export abstract class Player {
     public cleanUp() {
 
         //move revealed into discard (prob shouldn't be any at this point...)
-        for(let i = 0; i < this.revealed.length; i++)
+        while(this.revealed.length > 0)
         {
-            const card : Card = this.revealed[i];
-            this.revealed.splice(i);
+            const card : Card = this.revealed[0];
+            this.revealed.splice(0, 1);
 
             this.discard.push(card);
         }
 
         //move hand into discard
-        for(let i = 0; i < this.hand.length; i++)
+        while(this.hand.length > 0)
         {
-            const card : Card = this.hand[i];
+            const card : Card = this.hand[0];
             card.revealedToOthers = false;
-            this.hand.splice(i);
+            this.hand.splice(0, 1);
 
             this.discard.push(card);
         }
 
         //move in play into discard
-        for(let i = 0; i < this.inPlay.length; i++)
+        while(this.inPlay.length > 0)
         {
-            const card : Card = this.inPlay[i];
+            const card : Card = this.inPlay[0];
             card.revealedToOthers = false;
-            this.inPlay.splice(i);
+            this.inPlay.splice(0, 1);
 
             this.discard.push(card);
         }
 
         //draw a new hand
         this.draw(5);
+
+        //reset values
+        this.actions = 0;
+        this.buys = 0;
+        this.coins = 0;
     }
 
     //how many cards of the given type are in our hand?
@@ -198,27 +205,32 @@ export abstract class Player {
     }
 
     //set the current state, and set what kind of card we want the user to pick
-    public setState(state: PlayerState){
+    public setState(state: PlayerState, game: Game){
         this.state = state;
 
         //when moving to a new phase, we start fresh
         this.userSelections = [];
+        this.userPrompts = [];
+    }
 
+    public addStateActions(game: Game)
+    {
         // tell the user what we're looking for
-        if(state === PlayerState.WaitingForTurn)
+        if(this.state === PlayerState.WaitingForTurn)
         {
             //nothing to pick
         }
-        else if(state === PlayerState.Action)
+        else if(this.state === PlayerState.Action)
         {
             //in the action phase you choose actions to play from your hand
             const actionPhaseSelections: UserSelection[] = [];
             const pickAction : UserSelection = { location: Location.hand, isValid: (card: Card) => {return card.type === CardType.action;}, count: 1};
             actionPhaseSelections.push(pickAction);
 
-            this.userSelections.push(actionPhaseSelections);
+            this.userPrompts.push('done');
+            this.addSelection(actionPhaseSelections, game);
         }
-        else if (state === PlayerState.Buy)
+        else if (this.state === PlayerState.Buy)
         {
             //in the buy phase you can play treasure cards to get more coins, and use coins to buy from the shop
             const buyPhaseSelections: UserSelection[] = [];
@@ -226,12 +238,25 @@ export abstract class Player {
             const pickShop : UserSelection = { location: Location.shop, isValid: (card: Card) => {return true;}, count: 1};
             buyPhaseSelections.push(pickTreasure);
             buyPhaseSelections.push(pickShop);
-            
-            this.userSelections.push(buyPhaseSelections);
+
+            this.userPrompts.push('done');
+            this.addSelection(buyPhaseSelections, game);
         }
-        else if(state === PlayerState.CleanUp)
+        else if(this.state === PlayerState.CleanUp)
         {
             //nothing to pick
+        }
+    }
+
+    public addSelection(selection: UserSelection[], game: Game)
+    {
+        this.userSelections.push(selection);
+
+        //if we give the AI a selection, just do it
+        if(this instanceof AIPlayer)
+        {
+            const ai: AIPlayer = this as AIPlayer;
+            ai.doCurrentSelection(game);
         }
     }
 }
@@ -256,63 +281,78 @@ export class HumanPlayer extends Player{
 
 export class AIPlayer extends Player{
 
-    private game: Game;
-
     constructor(playerName: string, playerColor: string, index: number, game: Game) {
         super(playerName, playerColor, index);
         this.setupReady = true;
-        this.game = game;
+        // this.game = game;
     }
 
-    public setState(state: PlayerState)
-    {
-        super.setState(state);
-        // now that we're in a new state, pick something in response to the request
-        this.doCurrentSelection();
+    //ugly sleep, yuck
+    public wait(ms: number){
+        var start = new Date().getTime();
+        var end = start;
+        while(end < start + ms) {
+          end = new Date().getTime();
+       }
     }
 
-    public doCurrentSelection() {
-        const currentSelection : UserSelection[] = this.userSelections[this.userSelections.length - 1];
+    public doCurrentSelection(game: Game) {
 
-        for(const selection of currentSelection)
+        //wait a bit to let users see what's happening
+        this.wait(1000);
+
+        if(this.userSelections.length > 0)
         {
-            switch(selection.location)
+            const currentSelection : UserSelection[] = this.userSelections[this.userSelections.length - 1];
+
+            for(let i = 0; i < currentSelection.length; i++)
             {
-                case Location.hand:
-                    for (const card of this.hand)
-                    {
-                        if(selection.isValid(card) === true)
-                        {
-                            let cards: Card[] = [];
-                            cards.push(card);
-                            //tell the game we choose this card
-                            if(this.game.onCardsSelected(this.index, cards) === true)
-                                return;
-                        }
-                    }
-                    break;
-
-                case Location.deck:
-                    break;
-
-                case Location.shop:
-                    for(const card in this.game.shop)
-                    {
+                const selection = currentSelection[i];
+                switch(selection.location)
+                {
+                    case Location.hand:
                         let cards: Card[] = [];
-                        cards.push(this.game.shop[card][0]);
+                        for (const card of this.hand)
+                        {
+                            if(selection.isValid(card) === true)
+                            {
+                                cards.push(card);
+                                if( cards.length === selection.count)
+                                {
+                                    //tell the game we choose these cards
+                                    if(game.onCardsSelected(this.index, cards) === true)
+                                        return;
+                                }
+                            }
+                        }
+                        //didn't find anything, send back a blank
+                        if(i == currentSelection.length - 1)
+                        {
+                            game.onCardsSelected(this.index, cards);
+                        }
+                        break;
+                    case Location.deck:
+                        break;
 
-                        if(this.game.onCardsSelected(this.index, cards) === true)
+                    case Location.shop:
+                        for(const card in game.shop)
+                        {
+                           let cards: Card[] = [];
+                           cards.push(game.shop[card][0]);
+
+                           if(game.onCardsSelected(this.index, cards) === true)
                             return;
-                    }
-                    //somehow none of the cards in the shop worked, uh oh
-                    break;
+                        }
+                        //somehow none of the cards in the shop worked, uh oh
+                        break;
 
-                case Location.discard:
-                    //need to implement this if it's ever a thing
-                    break;
-                
-                case Location.inPlay:
-                    break;
+                    case Location.discard:
+                        //need to implement this if it's ever a thing
+                        break;
+                    
+                    case Location.inPlay:
+                        break;
+                }
             }
         }
     }

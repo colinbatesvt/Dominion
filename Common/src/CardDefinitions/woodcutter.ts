@@ -16,5 +16,7 @@ export class Woodcutter extends ActionCardDefinition
         player.buys++;
         // + 2 coins
         player.coins += 2;
+
+        game.finishExecution(this);
     }
 }

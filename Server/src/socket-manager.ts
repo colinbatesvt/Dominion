@@ -1,15 +1,23 @@
 import socket from 'socket.io'
+import async from 'async'
 import { Game } from '../../Common/src/game';
 import { Player, HumanPlayer } from '../../Common/src/player';
+import { ServerInterface } from '../../Common/src/server-interface';
 
-export class SocketManager {
+export class SocketManager implements ServerInterface{
 
     private server: any;
     // active games
     private gameList: Game[];
+
+    private io: any;
+    private socketsByGameName: Map<string, any[]>;
+
     constructor(server: any) {
-            this.server = server;
-            this.gameList = [];
+        this.server = server;
+        this.gameList = [];
+        this.socketsByGameName = new Map<string, any[]>();
+        this.io = socket(this.server);
     }
 
     public getGame(gameName: string) : Game
@@ -25,14 +33,8 @@ export class SocketManager {
 
     public setupSockets() {
         // socket setup
-        const io = socket(this.server);
-        io.on('connection', (connectedSocket) => {
+        this.io.on('connection', (connectedSocket) => {
             console.log('made socket connection', connectedSocket.id);
-
-            connectedSocket.on('new-message', (message) => {
-                console.log('chat message: ' + message);
-                io.sockets.emit('new-message', message);
-            });
 
             connectedSocket.on('join-game', (data, resultCallback) => {
                 let opOk = true;
@@ -65,12 +67,12 @@ export class SocketManager {
                 resultCallback({ok: opOk, error: opError, returnValue: opReturnValue});
                 if(opOk === true)
                 {
-                    connectedSocket.join(data.gameName);
+                    this.socketsByGameName[data.gameName].push(connectedSocket);
                 }
-                io.sockets.emit('games-updated', this.gameList);
+                this.io.sockets.emit('games-updated', this.gameList);
             });
 
-            connectedSocket.on('create-game', (gameName: string, resultCallback) => {
+            connectedSocket.on('create-game', (gameName: string, resultCallback: any) => {
                 let opError = "";
                 let opOk = true;
                 for(const game of this.gameList)
@@ -85,15 +87,16 @@ export class SocketManager {
                 if(opOk === true)
                 {
                     console.log('creating game: ' + gameName);
-                    const newGame = new Game(gameName);
+                    const newGame = new Game(gameName, this.updateGame);
                     this.gameList.push(newGame);
+                    this.socketsByGameName[gameName] = [];
                 }
 
                 resultCallback({ok: opOk, error:opError});
-                io.sockets.emit('games-updated', this.gameList);
+                this.io.sockets.emit('games-updated', this.gameList);
             });
 
-            connectedSocket.on('add-bot', (data, resultCallback) => {
+            connectedSocket.on('add-bot', (data: any, resultCallback: any) => {
                 let opOk = true;
                 let opError = "";
 
@@ -114,10 +117,11 @@ export class SocketManager {
                 }
 
                 resultCallback({ok: opOk, error:opError});
-                io.sockets.emit('games-updated', this.gameList);
+                this.io.sockets.emit('games-updated', this.gameList);
+                console.log("done add bot");
             });
 
-            connectedSocket.on('request-games-list', (data, resultCallback) => {
+            connectedSocket.on('request-games-list', (data: any, resultCallback: any) => {
                 resultCallback({ok: true});
                 connectedSocket.emit('games-updated', this.gameList);
             });
@@ -139,21 +143,22 @@ export class SocketManager {
 
                     if(game.hasNoActivePlayers())
                     {
+                        this.socketsByGameName.delete(game.name);
                         const index = this.gameList.indexOf(game);
-                        this.gameList.splice(index);
+                        this.gameList.splice(index, 1);
                     }
                 }
-                io.sockets.emit('games-updated', this.gameList);
+                this.io.sockets.emit('games-updated', this.gameList);
             });
 
-            connectedSocket.on('setup-card-selected', (data, resultCallback) => {
+            connectedSocket.on('setup-card-selected', (data: any, resultCallback: any) => {
                 console.log('card selected');
                 const game: Game = this.getGame(data.gameName);
                 let bOk: boolean = true;
                 if(game !== undefined)
                 {
                     game.setupSelectCard(data.cardName);
-                    io.in(data.gameName).emit('game-updated', game);
+                    this.updateGame(game);
                 }
                 else
                     bOk = false;
@@ -161,14 +166,14 @@ export class SocketManager {
                 resultCallback({ok: bOk});
             });
 
-            connectedSocket.on('setup-preset-selected', (data, resultCallback) => {
+            connectedSocket.on('setup-preset-selected', (data: any, resultCallback: any) => {
                 console.log('preset selected');
                 const game: Game = this.getGame(data.gameName);
                 let bOk: boolean = true;
                 if(game !== undefined)
                 {
                     game.setupSelectPreset(data.presetName);
-                    io.in(data.gameName).emit('game-updated', game);
+                    this.updateGame(game);
                 }
                 else
                     bOk = false;
@@ -176,7 +181,7 @@ export class SocketManager {
                 resultCallback({ok: bOk});
             });
 
-            connectedSocket.on('setup-player-ready', (data, resultCallback) => {
+            connectedSocket.on('setup-player-ready', (data: any, resultCallback: any) => {
                 console.log('player ready');
                 const game: Game = this.getGame(data.gameName);
                 let bOk: boolean = true;
@@ -184,7 +189,7 @@ export class SocketManager {
                 {
                     bOk = game.setupPlayerReady(data.playerName);
                     if(bOk === true)
-                        io.in(data.gameName).emit('game-updated', game);
+                        this.updateGame(game);
                 }
                 else
                     bOk = false;
@@ -192,7 +197,7 @@ export class SocketManager {
                 resultCallback({ok: bOk});
             });
 
-            connectedSocket.on('setup-start-game', (data, resultCallback) => {
+            connectedSocket.on('setup-start-game', (data: any, resultCallback: any) => {
                 console.log('game start');
                 const game: Game = this.getGame(data.gameName);
                 let bOk: boolean = true;
@@ -200,14 +205,71 @@ export class SocketManager {
                 {
                     bOk = game.setupStartGame();
                     if(bOk === true)
-                        io.in(data.gameName).emit('game-updated', game);
+                    {
+                        game.advanceGame();
+                        this.updateGame(game);
+                    }
                 }
                 else
                     bOk = false;
 
                 resultCallback({ok: bOk});
             });
+            connectedSocket.on('prompt-clicked', (data: any, resultCallback: any) => {
+                console.log('prompt clicked (' + data.prompt + ')');
+                const game: Game = this.getGame(data.gameName);
+                let bOk: boolean = true;
+                if(game !== undefined)
+                {
+                    game.onPromptClicked(data.playerIndex, data.prompt);
+                    this.updateGame(game);
+                }
+                else
+                    bOk = false;
+
+                resultCallback({ok: bOk});
+
+            });
+            connectedSocket.on('cards-selected', (data: any, resultCallback: any) => {
+                console.log('cards-selected (' + data.cards + ')');
+                const game: Game = this.getGame(data.gameName);
+                let bOk: boolean = true;
+                if(game !== undefined)
+                {
+                    game.onCardsSelected(data.playerIndex, data.cards);
+                    this.updateGame(game);
+                }
+                else
+                    bOk = false;
+
+                resultCallback({ok: bOk});
+
+            });
+
         });
+
+        // start game loop
+        /*
+        const UPS = 20;
+        const gameLoop = setInterval(() => {
+            for(const game of this.gameList)
+            {
+                if(game.needsAdvance)
+                {
+                    game.advanceGame(this);
+                    this.updateGame(game);
+                }
+            }
+        }, 1000 / UPS);
+        */
+    }
+
+    // override ServerInterface updateGame
+    public updateGame(game: Game) {
+        for(const playerSocket of this.socketsByGameName[game.name])
+        {
+            playerSocket.emit('game-updated', game);
+        }
     }
 
 }

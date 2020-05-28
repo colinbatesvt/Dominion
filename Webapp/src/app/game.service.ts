@@ -15,25 +15,29 @@ export class GameService {
   private game: Game;
   private gameSubject: Subject<Game>;
 
-  private selectedCard: Card;
-  private selectedCardSubject: Subject<Card>;
+  private viewedCard: Card;
+  private viewedCardSubject: Subject<Card>;
+
+  private selectedCards: Card[];
 
   constructor(private socket: Socket, private statusService: StatusService) {
     this.gameSubject = new Subject<Game>();
-    this.selectedCardSubject = new Subject<Card>();
+    this.viewedCardSubject = new Subject<Card>();
+    this.selectedCards = [];
 
     this.socket.on('game-updated', (game: Game) => {
-        console.log('game updated');
         if (this.game !== undefined)
         {
           this.game = game;
           this.player = game.players[this.player.index];
           this.gameSubject.next(this.game);
+
+          this.statusService.updateStatus(this.game);
         }
     });
   }
 
-  public GetPlayer(): Player {
+  public getPlayer(): Player {
     return this.player;
   }
 
@@ -61,12 +65,6 @@ export class GameService {
     this.sendToServer('join-game', { playerName: myPlayerName, playerColor: myPlayerColor, gameName: myGameName }, (returnValue: any) => {
       this.player = returnValue.player;
       this.game = returnValue.game;
-
-
-      this.addBot('Larry');
-      this.addBot('Moe');
-      this.addBot('Curly');
-
       this.gameSubject.next(this.game);
     });
   }
@@ -132,6 +130,7 @@ export class GameService {
   public onGamesUpdated = () => {
     return Observable.create((observer) => {
       this.socket.on('games-updated', (games: Game[]) => {
+        console.log('games updated');
         if (this.game !== undefined)
         {
           for (const game of games)
@@ -148,13 +147,26 @@ export class GameService {
     });
   }
 
+  public onPromptClicked(clickedPrompt: string){
+    this.sendToServer('prompt-clicked', {gameName: this.game.name, playerIndex: this.player.index, prompt: clickedPrompt}, () => {});
+  }
+
   public onCardSelected(card: Card) {
-    this.selectedCard = card;
-    this.selectedCardSubject.next(this.selectedCard);
+    console.log('card selected ( ' + card.id + ' )');
+    this.selectedCards.push(card);
+    if (this.selectedCards.length >= this.player.userSelections[this.player.userSelections.length - 1][0].count)
+    {
+      this.sendToServer('cards-selected', {gameName: this.game.name, playerIndex: this.player.index, cards: this.selectedCards}, () => {});
+      this.selectedCards = [];
+    }
+  }
+  public onCardViewed(card: Card) {
+    this.viewedCard = card;
+    this.viewedCardSubject.next(this.viewedCard);
   }
 
   public onSelectedCardChanged = () => {
-    return this.selectedCardSubject.asObservable();
+    return this.viewedCardSubject.asObservable();
   }
 }
 

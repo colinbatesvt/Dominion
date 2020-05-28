@@ -20,6 +20,8 @@ export class Militia extends ActionCardDefinition
 
     public execute(game: Game, player: Player) {
         player.coins += 2;
+        
+        this.playersDone = [];
 
         //each other player discards down to 3 cards in hand
         for(const attackedPlayer of game.players)
@@ -50,7 +52,7 @@ export class Militia extends ActionCardDefinition
                         const selection: UserSelection[] = [];
                         const discard: UserSelection = {location: Location.hand, isValid: (card: Card) => {return true;}, count: player.hand.length - 3}
                         selection.push(discard)
-                        attackedPlayer.userSelections.push(selection);
+                        attackedPlayer.addSelection(selection, game);
                     }
                 }
             }
@@ -106,7 +108,7 @@ export class Militia extends ActionCardDefinition
         }
 
         this.playersDone[player.index] = true;
-        player.userSelections.splice(player.userSelections.length - 1);
+        player.userSelections.splice(player.userSelections.length - 1, 1);
         
         //see if everyone has discarded, and if they have, clean up
         let bAllDone = true;

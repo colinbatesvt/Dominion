@@ -1,5 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Card } from '../../../../Common/src/card';
+import { GameService } from '../game.service';
+import { Game } from '../../../../Common/src/game';
 
 @Component({
   selector: 'app-shop',
@@ -8,17 +10,36 @@ import { Card } from '../../../../Common/src/card';
 })
 export class ShopComponent implements OnInit {
 
-  @Input() shop: Record<string, Card[]>;
-
+  shop: Record<string, Card[]>;
   basicCards: Card[][];
   kingdomCards: Card[][];
-  constructor() {
+  trash: Card[];
+
+  constructor(private gameService: GameService) {
     this.basicCards = [];
     this.kingdomCards = [];
   }
 
   ngOnInit() {
-    // TODO: why don't they like this?
+
+    this.shop = this.gameService.getGame().shop;
+    this.trash = this.gameService.getGame().trash;
+    this.initShopPiles();
+
+    this.gameService.onGameChanged().subscribe((game: Game) => {
+      this.shop = game.shop;
+      this.trash = game.trash;
+      console.log(this.trash);
+      this.initShopPiles();
+    });
+  }
+
+  initShopPiles()
+  {
+    this.basicCards = [];
+    this.kingdomCards = [];
+
+    // TODO: why don't they like this
     // tslint:disable-next-line:forin
     for (const item in this.shop) {
       if (this.shop[item][0].isKingdom)
@@ -30,6 +51,10 @@ export class ShopComponent implements OnInit {
         this.basicCards.push(this.shop[item]);
       }
     }
+  }
+
+  onPileClicked(cards: Card[]) {
+    this.gameService.onCardSelected(cards[0]);
   }
 
 }
