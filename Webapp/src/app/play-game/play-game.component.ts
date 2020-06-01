@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { GameService } from '../game.service';
-import { Game } from '../../../../Common/src/game';
-import { Player } from '../../../../Common/src/player';
+import { Game, GameState } from '../../../../Common/src/game';
+import { Player, PlayerState } from '../../../../Common/src/player';
 import { StatusService } from '../status.service';
+import { Action } from 'rxjs/internal/scheduler/Action';
+import { CardType } from '../../../../Common/src/card-definition';
 
 @Component({
   selector: 'app-play-game',
@@ -49,6 +51,35 @@ export class PlayGameComponent implements OnInit {
 
   onPromptClicked(prompt: string) {
     this.gameService.onPromptClicked(prompt);
+  }
+
+  isPromptHighlighted(prompt: string): boolean {
+    if (prompt === 'done')
+    {
+      if (this.myPlayer.state === PlayerState.Action)
+      {
+        let anyActions = false;
+        for (const card of this.myPlayer.hand)
+        {
+          if (card.type === CardType.action)
+          {
+            anyActions = true;
+          }
+        }
+
+        if (this.myPlayer.actions === 0 || anyActions === false)
+        {
+          return true;
+        }
+      }
+      else if (this.myPlayer.state === PlayerState.Buy && this.myPlayer.buys === 0)
+      {
+        return true;
+      }
+    }
+
+    return false;
+
   }
 
   initPlayers() {

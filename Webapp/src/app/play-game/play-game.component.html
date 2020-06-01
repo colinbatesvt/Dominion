@@ -1,7 +1,7 @@
 
 <div id = "status">
     {{getStatus()}}
-    <button mat-button *ngFor="let prompt of myPlayer.userPrompts[myPlayer.userPrompts.length-1]" (click)="onPromptClicked(prompt)">{{prompt}}</button>
+    <button mat-button *ngFor="let prompt of myPlayer.userPrompts[myPlayer.userPrompts.length-1]" [class.highlighted]="isPromptHighlighted(prompt) === true" (click)="onPromptClicked(prompt)">{{prompt}}</button>
     <mat-divider></mat-divider>
 </div>
 
