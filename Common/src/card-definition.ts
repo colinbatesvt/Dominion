@@ -56,4 +56,8 @@ export abstract class CardDefinition{
     public onSelection(game: Game, player: Player, cards: Card[]) : boolean{
         return true;
     }
+
+    public onPrompt(prompt: string, game: Game, player: Player, cards: Card[]) : boolean{
+        return true;
+    }
 }

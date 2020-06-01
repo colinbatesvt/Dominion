@@ -1,10 +1,21 @@
 <app-join-game *ngIf="game === undefined"></app-join-game>
 <app-setup-game *ngIf="game != undefined && game.state === 'setup' "></app-setup-game>
 <app-play-game *ngIf="game != undefined && game.state === 'play' "></app-play-game>
+<app-game-over *ngIf="game != undefined && game.state === 'over' "></app-game-over>
 
-<div id = "selectedCard" *ngIf = "selectedCard != undefined">
+<div id = "viewedCard" *ngIf = "viewedCard != undefined">
     <div id = "grayOut">
         <h1 id="close" (click)="onCloseSelected()">X</h1>
-        <app-card id = "card" [card] = "selectedCard" [selected]="false" [orientation]="'bottom'" [revealed]="true"></app-card>
+        <app-card id = "card" [card] = "viewedCard" [selected]="false" [orientation]="'bottom'" [revealed]="true"></app-card>
+    </div>
+</div>
+
+<div id = "viewedPile" *ngIf = "viewedPile.length > 0">
+    <div id = "grayOut">
+        <h1 id="close" (click)="onCloseSelected()">X</h1>
+        <div id="pileView">
+            <app-card *ngFor="let pileCard of viewedPile" id = "pileCard" [card] = "pileCard" [selected]="false" [orientation]="'bottom'" [revealed]="true"></app-card>         
+        </div>
+        
     </div>
 </div>

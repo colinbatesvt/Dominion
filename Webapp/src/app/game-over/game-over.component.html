@@ -1,0 +1,18 @@
+<app-banner></app-banner>
+
+<br>
+<mat-divider></mat-divider>
+<br>
+
+<mat-card id="content">
+<mat-card-title>{{winner}}</mat-card-title>
+<mat-card-content>
+
+  <h1>Results</h1>
+  <table>
+    <th>Player</th><th>Victory Points</th>
+    <tr *ngFor="let player of orderedPlayers"><td>{{player[0]}}</td><td>{{player[1]}}</td></tr>
+  </table>
+  <button mat-button color="primary" (click)="onLeaveGame()">Leave Game</button>
+</mat-card-content>
+</mat-card>

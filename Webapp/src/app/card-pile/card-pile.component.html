@@ -1,7 +1,14 @@
+<p id = "title" *ngIf="showLocationLabel === true">{{location}}</p>
 <img  *ngIf="cards.length > 0" 
+[class.hovered]="hovered"
 [ngClass]="{
     'bottom': orientation==='bottom',
     'left': orientation==='left',
     'top': orientation==='top',
     'right': orientation==='right'
- }"  src = "{{getImgSrc()}}">
+ }"  src = "{{getImgSrc()}}" (click)="onClick()">
+
+ 
+<div id = "hoverArea" (mouseenter)="hovered = true" (mouseleave)="hovered = false" (click)="onClick()"></div>
+
+<p id = "count" *ngIf="cards.length > 0">{{cards.length}}</p>

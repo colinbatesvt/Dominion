@@ -31,12 +31,11 @@ export class SetupGameComponent implements OnInit {
     this.game = this.gameService.getGame();
     this.gameService.onGameChanged().subscribe((game: Game) => {
       this.game = game;
-      this.selectedPreset = this.game.setupPreset;
+      if (this.game !== undefined)
+      {
+        this.selectedPreset = this.game.setupPreset;
+      }
     });
-  }
-
-  onSelect(card: Card): void {
-    this.gameService.setupSelectCard(card.name);
   }
 
   getCards(): void {

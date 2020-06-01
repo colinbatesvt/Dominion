@@ -20,12 +20,19 @@ export class Remodel extends ActionCardDefinition
     public execute(game: Game, player: Player) 
     {
         // Trash a card from your hand gain a card costing up to 2 more than it
-        const selection: UserSelection[] = [];
-        const trash: UserSelection = {location: Location.hand, isValid: (card: Card) => {return true;}, count: 1}
-        selection.push(trash)
-        player.addSelection(selection, game);
-
-        this.handPick = true;
+        if(player.hand.length > 0)
+        {
+            const selection: UserSelection[] = [];
+            const trash: UserSelection = {location: Location.hand, isValid: (card: Card) => {return true;}, count: 1}
+            selection.push(trash)
+            player.pushSelection(selection, game);
+            player.status = "Choose a card from your hand to trash";
+            this.handPick = true;
+        }
+        else 
+        {
+            game.finishExecution(this);
+        }
     }
 
     public onSelection(game: Game, player: Player, cards: Card[]) : boolean{
@@ -49,16 +56,16 @@ export class Remodel extends ActionCardDefinition
                 player.hand.splice(handIndex, 1);
                 game.trashCard(trashCard);
                 //remove this selection, add gain selection
-                player.userSelections.splice(player.userSelections.length -1, 1);
-
-                //TODO: test this, I have no idea if referencing trashCard in that function will work
+                player.popSelection();
+                const library: CardLibrary = new CardLibrary;
+                const maxBuy: Number = library.getCardDefinition(trashCard.name).cost + 2;
+                player.status = "Gain a card from the shop costing up to " + maxBuy;
                 const selection: UserSelection[] = [];
                 const gain: UserSelection = {location: Location.shop, isValid: (card: Card) => {
-                    const library: CardLibrary = new CardLibrary;
-                    return library.getCardDefinition(card.name).cost <= library.getCardDefinition(trashCard.name).cost + 2;
+                    return library.getCardDefinition(card.name).cost <= maxBuy;
                 }, count: 1}
                 selection.push(gain)
-                player.addSelection(selection, game);
+                player.pushSelection(selection, game);
                 this.handPick = false;
             }
             else 
@@ -75,7 +82,8 @@ export class Remodel extends ActionCardDefinition
             {
                 player.gain(Location.discard, gainCard);
                 game.shop[gainCard.name].splice(0, 1);
-                player.userSelections.splice(player.userSelections.length -1, 1);
+                player.popSelection();
+                player.status = "";
                 game.finishExecution(this);
             }
             else

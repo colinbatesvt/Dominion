@@ -1,3 +1,7 @@
+:host {
+  position: relative;
+}
+
 .selected {
     border-style: solid;
     border-color: #80e5ff;
@@ -6,24 +10,57 @@
     margin: 0px;
   }
 
+.highlighted {
+    border-style: solid;
+    border-color: #ecff80;
+    border-radius: 5px;
+    border-width: 5px;
+    margin: 0px;
+  }
+
+#hoverArea {
+  position: absolute;
+  cursor: pointer;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 11;
+}
 
 img {
   box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 12px 40px 0 rgba(0, 0, 0, 0.19);
+  margin: 5px;
+  cursor: pointer;
+  position: relative;
+  display: block;
 }
 
 .bottom {
-  max-height: 100%;
+  max-width: calc(100% - 5px);
+  max-height: calc(100% - 5px);
 }
 
 .top {
-  max-height: 100%;
-
+  max-height: calc(100% - 5px);
 }
 
 .left {
-  max-width: 100%;
+  max-width: calc(100% - 5px);
 }
 
 .right {
-  max-width: 100%;
+  max-width: calc(100% - 5px);
+}
+
+.hovered
+{
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  max-width: 190px;
+  max-height: 300px;
+  height: auto;
+  width: auto;
+  z-index: 10;
 }

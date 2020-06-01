@@ -96,6 +96,38 @@ export class SocketManager implements ServerInterface{
                 this.io.sockets.emit('games-updated', this.gameList);
             });
 
+            connectedSocket.on("leave-game", (data: any, resultCallback: any) => {
+                let opOk = true;
+                let opError = "";
+
+                const game: Game = this.getGame(data.gameName);
+                if(game !== undefined)
+                {
+                    const error = game.playerLeave(data.playerIndex);
+                    if(error !== "")
+                    {
+                        opOk = false;
+                        opError = error;
+                    }
+                    else {
+                        if(game.hasNoActivePlayers())
+                        {
+                            this.socketsByGameName.delete(game.name);
+                            const index = this.gameList.indexOf(game);
+                            this.gameList.splice(index, 1);
+                        }
+                    }
+                }
+                else
+                {
+                    opOk = false;
+                    opError = "No game with that name";
+                }
+
+                resultCallback({ok: opOk, error:opError});
+                this.io.sockets.emit('games-updated', this.gameList);
+            });
+
             connectedSocket.on('add-bot', (data: any, resultCallback: any) => {
                 let opOk = true;
                 let opError = "";
@@ -221,7 +253,7 @@ export class SocketManager implements ServerInterface{
                 let bOk: boolean = true;
                 if(game !== undefined)
                 {
-                    game.onPromptClicked(data.playerIndex, data.prompt);
+                    game.onPromptClicked(data.playerIndex, data.prompt, data.cards);
                     this.updateGame(game);
                 }
                 else

@@ -12,9 +12,12 @@ import { Card } from '../../../Common/src/card';
 export class AppComponent implements OnInit{
   title = 'Dominion';
   game: Game;
-  selectedCard: Card;
+  viewedCard: Card;
+  viewedPile: Card[];
 
   constructor(public gameService: GameService) {
+    this.viewedCard = undefined;
+    this.viewedPile = [];
   }
 
   ngOnInit() {
@@ -22,17 +25,20 @@ export class AppComponent implements OnInit{
       this.game = game;
     });
 
-    this.gameService.onSelectedCardChanged().subscribe((selectedCard: Card) => {
-      this.selectedCard = selectedCard;
-      console.log(this.selectedCard);
+    this.gameService.onViewedCardChanged().subscribe((viewedCard: Card) => {
+      this.viewedCard = viewedCard;
     });
 
+    this.gameService.onViewedPileChanged().subscribe((viewedPile: Card[]) => {
+      this.viewedPile = viewedPile;
+    });
     // TEST CODE
     this.gameService.createGame('Colin', '#0000FF', 'Test Game');
   }
 
   onCloseSelected() {
-    this.gameService.onCardSelected(undefined);
+    this.gameService.setViewedCard(undefined);
+    this.gameService.setViewedPile([], '');
   }
 }
 

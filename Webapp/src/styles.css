@@ -5,4 +5,11 @@ body {
     background:lightgray;
     width: calc(100% - 16px); 
     height: calc(100% - 16px);
+    
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }

@@ -26,6 +26,7 @@ import {MatSelectModule} from '@angular/material/select';
 import { PlayerComponent } from './player/player.component';
 import { CardPileComponent } from './card-pile/card-pile.component';
 import { ShopComponent } from './shop/shop.component';
+import { GameOverComponent } from './game-over/game-over.component';
 
 const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
 
@@ -40,7 +41,8 @@ const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
       SetupGameComponent,
       PlayerComponent,
       CardPileComponent,
-      ShopComponent
+      ShopComponent,
+      GameOverComponent
    ],
    imports: [
       BrowserModule,

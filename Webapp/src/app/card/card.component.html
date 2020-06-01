@@ -1,6 +1,9 @@
-<img src="{{getImgSrc()}}" [class.selected]="selected" [class.unselected]="!selected" [ngClass]="{
+
+<img src="{{getImgSrc()}}" [class.hovered]="hovered" [class.selected]="selected" [class.unselected]="!selected" [class.highlighted]="highlighted" (click)="onClick()" [ngClass]="{
     'bottom': orientation==='bottom',
     'left': orientation==='left',
     'top': orientation==='top',
     'right': orientation==='right'
- }" >
+}" >
+
+<div id = "hoverArea" (mouseenter)="hovered = true" (mouseleave)="hovered = false" (click)="onClick()"></div>

@@ -45,9 +45,11 @@ export abstract class Player {
     public actions: number;
     public buys: number;
     public coins: number;
-    public userPrompts: string[];
+    public userPrompts: string[][]; // this is a stack of arrays of strings. Describes prompts display ed to the user on status bar buttons
 
     public userSelections: UserSelection[][]; // this is a stack of arrays that describe what the user can select right now
+
+    public status: string;
 
     constructor(playerName: string, playerColor: string, index: number)
     {
@@ -71,6 +73,8 @@ export abstract class Player {
 
         this.userSelections = [];
         this.userPrompts = [];
+
+        this.status = "";
     }
 
 
@@ -227,8 +231,8 @@ export abstract class Player {
             const pickAction : UserSelection = { location: Location.hand, isValid: (card: Card) => {return card.type === CardType.action;}, count: 1};
             actionPhaseSelections.push(pickAction);
 
-            this.userPrompts.push('done');
-            this.addSelection(actionPhaseSelections, game);
+            this.userPrompts.push(['done']);
+            this.pushSelection(actionPhaseSelections, game);
         }
         else if (this.state === PlayerState.Buy)
         {
@@ -239,8 +243,8 @@ export abstract class Player {
             buyPhaseSelections.push(pickTreasure);
             buyPhaseSelections.push(pickShop);
 
-            this.userPrompts.push('done');
-            this.addSelection(buyPhaseSelections, game);
+            this.userPrompts.push(['done']);
+            this.pushSelection(buyPhaseSelections, game);
         }
         else if(this.state === PlayerState.CleanUp)
         {
@@ -248,7 +252,7 @@ export abstract class Player {
         }
     }
 
-    public addSelection(selection: UserSelection[], game: Game)
+    public pushSelection(selection: UserSelection[], game: Game)
     {
         this.userSelections.push(selection);
 
@@ -258,6 +262,23 @@ export abstract class Player {
             const ai: AIPlayer = this as AIPlayer;
             ai.doCurrentSelection(game);
         }
+    }
+
+    public popSelection() : UserSelection[] {
+        const popped: UserSelection[] = this.userSelections[this.userSelections.length-1];
+        this.userSelections.splice(this.userSelections.length-1, 1);
+        return popped;
+    }
+
+    public pushPrompt(prompts: string[]) 
+    {
+        this.userPrompts.push(prompts);
+    }
+
+    public popPrompt() : string[] {
+        const popped: string[] = this.userPrompts[this.userPrompts.length-1];
+        this.userPrompts.splice(this.userPrompts.length -1, 1);
+        return popped;
     }
 }
 

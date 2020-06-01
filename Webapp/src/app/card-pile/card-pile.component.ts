@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Card } from '../../../../Common/src/card';
+import { GameService } from '../game.service';
 
 @Component({
   selector: 'app-card-pile',
@@ -11,8 +12,13 @@ export class CardPileComponent implements OnInit {
   @Input() cards: Card[];
   @Input() revealed: boolean; // can users see the cards in the pile? or should we show the card back?
   @Input() orientation: string;
+  @Input() location = '';
+  @Input() showLocationLabel = false;
 
-  constructor() {
+  hovered: boolean;
+
+  constructor(private gameService: GameService) {
+    this.hovered = false;
   }
 
 
@@ -32,6 +38,13 @@ export class CardPileComponent implements OnInit {
       url += 'Card_Back.jpg';
     }
     return url;
+  }
+
+  onClick() {
+    if (this.revealed === true)
+    {
+      this.gameService.setViewedPile(this.cards, this.location);
+    }
   }
 
 }

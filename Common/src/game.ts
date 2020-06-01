@@ -1,10 +1,11 @@
-import { Player, Location, PlayerState, HumanPlayer, AIPlayer } from "./player";
+import { Player, Location, PlayerState, HumanPlayer, AIPlayer, UserSelection } from "./player";
 import { Card } from "./card";
 import { CardLibrary } from "./card-library";
 import { CardDefinition, CardType } from "./card-definition";
 import { Estate } from "./CardDefinitions/estate";
 import { Copper } from "./CardDefinitions/copper";
 import { ServerInterface } from "./server-interface";
+import { Province } from "./CardDefinitions/province";
 
 export enum GameState {
     Setup = 'setup',
@@ -145,6 +146,18 @@ export class Game {
         let newPlayer: HumanPlayer = new HumanPlayer(playerName, playerColor, socketId, this.players.length);
         this.players.push(newPlayer);
 
+        return "";
+    }
+
+    public playerLeave(playerIndex: number) : string
+    {
+        if(playerIndex < this.players.length)
+        {
+            this.players.splice(playerIndex, 1);
+        }
+        else{
+            return "invalid index";
+        }
         return "";
     }
 
@@ -347,6 +360,23 @@ export class Game {
         this.players[this.currentPlayer].buys = 1;
         this.players[this.currentPlayer].coins = 0;
 
+        this.shop[Province.cardName].splice(1, 8);
+
+        /* for testing game over
+        for(const player of this.players)
+        {
+            const victoryCards = Math.floor(Math.random() * 10);
+            for(let i = 0; i < victoryCards; i++)
+            {
+                const card: Card | null = this.library.getCard("estate");
+                if(card !== null)
+                {
+                    player.deck.push(card);
+                }
+            }
+        }
+        */
+
         this.setGameState(GameState.PlayGame);
         return true;
     }
@@ -362,7 +392,7 @@ export class Game {
         
         while(waitingForPlayer === false) 
         {
-            const currentPlayer: Player = this.players[this.currentPlayer];
+            let currentPlayer: Player = this.players[this.currentPlayer];
 
             //get ready of anything currently executing
             for(let i = this.executingCards.length - 1; i >= 0; i--)
@@ -383,14 +413,7 @@ export class Game {
             }
 
             else if (currentPlayer.state === PlayerState.Buy)
-            {
-                 //the game always ends after buying something, so check if it's over here
-                 if(this.checkGameOver())
-                 {
-                     //Game Over! show the end screen
-                     this.state = GameState.GameOver;
-                 }
-                 
+            { 
                 currentPlayer.setState(PlayerState.CleanUp, this);
 
             }
@@ -401,8 +424,9 @@ export class Game {
                 currentPlayer.cleanUp();
                 currentPlayer.setState(PlayerState.WaitingForTurn, this);
                 this.currentPlayer = (this.currentPlayer + 1) % this.players.length;// after clean up, move to the next player
+                currentPlayer = this.players[this.currentPlayer];
                 //you get 1 action, 1 buy, and no coins to start your turn
-                this.players[this.currentPlayer].setState(PlayerState.Action, this);
+                currentPlayer.setState(PlayerState.Action, this);
                 currentPlayer.actions= 1;
                 currentPlayer.buys = 1;
                 currentPlayer.coins = 0;
@@ -418,7 +442,7 @@ export class Game {
 
     public checkGameOver(): boolean {
         let gameOver = false;
-        if(this.shop[Estate.cardName].length === 0)
+        if(this.shop[Province.cardName].length === 0)
             gameOver = true;
         else
         {
@@ -440,6 +464,27 @@ export class Game {
     {
         const player: Player = this.players[playerIndex];
 
+        let validSelection = false;
+        const currentSelections: UserSelection[] = player.userSelections[player.userSelections.length - 1];
+        for(const selection of currentSelections)
+        {
+            let allCardsValid = true;
+            for(const card of cards)
+            {
+                if(selection.isValid(card) === false)
+                {
+                    allCardsValid = false;
+                }
+            }
+
+            if(allCardsValid === true)
+                validSelection = true;
+        }
+
+        //cards not valid
+        if(validSelection === false)
+            return false;
+
         //if there's an executing card, it gets the selection
         if(this.executingCards.length > 0)
         {
@@ -449,7 +494,7 @@ export class Game {
         //determine what to do with the selection based on turn phase
         else if(player.state == PlayerState.Action)
         {
-            if(cards.length > 0)
+            if(cards.length > 0 && player.actions > 0)
             {
                 //1 card selected at a time
                 const card: Card = cards[0];
@@ -487,7 +532,7 @@ export class Game {
                 }
             }
         }
-        else if(player.state == PlayerState.Buy)
+        else if(player.state == PlayerState.Buy && player.buys > 0)
         {
             if(cards.length > 0)
             {
@@ -533,13 +578,26 @@ export class Game {
                     {
                         return false;
                     }
+
+                    //the game always ends after buying something, so check if it's over here
+                    if(this.checkGameOver())
+                    {
+                         //Game Over! show the end screen
+                        this.state = GameState.GameOver;
+                    }
                 }
             }
         }
         return true;
     }
 
-    onPromptClicked(playerIndex: number, prompt: string) {
+    onPromptClicked(playerIndex: number, prompt: string, cards: Card[]) {
+        
+        if(this.executingCards.length > 0)
+        {
+            if(this.executingCards[this.executingCards.length - 1].onPrompt(prompt, this, this.players[playerIndex], cards) === true)
+                return;
+        }
         if(prompt == 'done')
         {
             this.advanceGame();

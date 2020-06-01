@@ -37,6 +37,16 @@ export class PlayGameComponent implements OnInit {
     });
   }
 
+  getStatus(): string {
+    if (this.myPlayer.status !== '')
+    {
+      return this.myPlayer.status;
+    }
+    else{
+      return this.status;
+    }
+  }
+
   onPromptClicked(prompt: string) {
     this.gameService.onPromptClicked(prompt);
   }

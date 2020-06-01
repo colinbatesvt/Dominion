@@ -23,7 +23,8 @@ export class Workshop extends ActionCardDefinition
             return library.getCardDefinition(card.name).cost <= 4;
         }, count: 1}
         selection.push(gain)
-        player.addSelection(selection, game);
+        player.pushSelection(selection, game);
+        player.status = "Gain a card costing up to 4";
     }
 
     public onSelection(game: Game, player: Player, cards: Card[]) : boolean{
@@ -34,8 +35,9 @@ export class Workshop extends ActionCardDefinition
         {
             player.gain(Location.discard, gainCard);
             game.shop[gainCard.name].splice(0, 1);
-            player.userSelections.splice(player.userSelections.length -1, 1);
+            player.popSelection();
             game.finishExecution(this);
+            player.status = "";
         }
 
         return true;

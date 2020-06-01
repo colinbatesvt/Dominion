@@ -29,7 +29,6 @@ export class ShopComponent implements OnInit {
     this.gameService.onGameChanged().subscribe((game: Game) => {
       this.shop = game.shop;
       this.trash = game.trash;
-      console.log(this.trash);
       this.initShopPiles();
     });
   }
@@ -39,8 +38,6 @@ export class ShopComponent implements OnInit {
     this.basicCards = [];
     this.kingdomCards = [];
 
-    // TODO: why don't they like this
-    // tslint:disable-next-line:forin
     for (const item in this.shop) {
       if (this.shop[item][0].isKingdom)
       {

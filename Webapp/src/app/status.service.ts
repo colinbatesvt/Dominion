@@ -23,7 +23,6 @@ export class StatusService {
   public setStatus(newStatus: string) {
     this.status = newStatus;
     this.statusSubject.next(this.status);
-    console.log('status service updated: ' + this.status);
   }
 
   public getStatus(): string {

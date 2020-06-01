@@ -34,7 +34,7 @@
   <mat-card-title>Kingdom Cards</mat-card-title>
   <mat-card-content>
     <div id = "presets">
-      <mat-form-field>
+      <mat-form-field id = "presets">
         <mat-label>Reccomended Sets</mat-label>
         <mat-select [(value)]="selectedPreset" (selectionChange)="selectPreset()">
           <mat-option *ngFor="let preset of presets" [value]="preset">
@@ -44,7 +44,7 @@
       </mat-form-field>
     </div>
     <div id = "kingdomCards">
-      <app-card  *ngFor ="let card of kingdomCards" [card]="card" [selected]="game.setupSelectedCards.indexOf(card.cardType) >= 0" (click)="onSelect(card)" [revealed]="true" [orientation]="'bottom'"></app-card>
+      <app-card  *ngFor ="let card of kingdomCards" [card]="card" [selected]="game.setupSelectedCards.indexOf(card.name) >= 0" [revealed]="true" [orientation]="'bottom'"></app-card>
     </div>
   </mat-card-content>
 </mat-card>

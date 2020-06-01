@@ -22,42 +22,52 @@ export class Cellar extends ActionCardDefinition
         const pickDiscard: UserSelection = {location: Location.hand, isValid: (card: Card) => {return true;}, count: -1};
         let selections: UserSelection[] = [];
         selections.push(pickDiscard);
-        player.addSelection(selections, game);
+
+        const prompts: string[] = ["discard"];
+        player.pushPrompt(prompts);
+        player.pushSelection(selections, game);
+        player.status = "Choose any number of cards to discard";
     }
 
-    public onSelection(game: Game, player: Player, cards: Card[]) : boolean{
-
-        // verify all these cards are actual cards in the user's hand
-        let bAllFound = true;
-        for(const card of cards)
+    public onPrompt(prompt: string, game: Game, player: Player, cards: Card[]) : boolean
+    {
+        if(prompt === "discard")
         {
-            let bFound = false;
-            for(const handCard of player.hand)
-            {
-                if(card.id === handCard.id)
-                {
-                    bFound = true;
-                }
-            }
-            if(bFound !== true)
-                bAllFound = false;
-        }
-
-        if(bAllFound !== true)
-        {
-            return false;
-        }
-        else
-        {
+            // verify all these cards are actual cards in the user's hand
+            let bAllFound = true;
             for(const card of cards)
             {
-                player.discardCard(card);
+                let bFound = false;
+                for(const handCard of player.hand)
+                {
+                    if(card.id === handCard.id)
+                    {
+                        bFound = true;
+                    }
+                }
+                if(bFound !== true)
+                    bAllFound = false;
             }
 
-            player.draw(cards.length);    
-            player.userSelections.splice(player.userSelections.length - 1, 1);
-            game.finishExecution(this);
+            if(bAllFound !== true)
+            {
+                return false;
+            }
+            else
+            {
+                for(const card of cards)
+                {
+                    player.discardCard(card);
+                }
+
+                player.draw(cards.length);    
+                player.popSelection();
+                player.popPrompt();
+                game.finishExecution(this);
+                player.status = "";
+            }
+            return true;
         }
-        return true;
+        return false;
     }
 }

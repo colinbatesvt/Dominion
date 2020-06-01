@@ -32,7 +32,7 @@ export class Militia extends ActionCardDefinition
                 for(const card of attackedPlayer.hand)
                 {
                     // moat immunity, this should probably be a little more generic for futre reactions, but ya know...
-                    if(card.name === "Moat")
+                    if(card.name === "moat")
                     {
                         bImmune = true;
                         card.revealedToOthers = true;
@@ -50,9 +50,10 @@ export class Militia extends ActionCardDefinition
                     {
                         this.playersDone.push(false);
                         const selection: UserSelection[] = [];
-                        const discard: UserSelection = {location: Location.hand, isValid: (card: Card) => {return true;}, count: player.hand.length - 3}
+                        const discard: UserSelection = {location: Location.hand, isValid: (card: Card) => {return true;}, count: attackedPlayer.hand.length - 3}
                         selection.push(discard)
-                        attackedPlayer.addSelection(selection, game);
+                        attackedPlayer.pushSelection(selection, game);
+                        attackedPlayer.status = "Discard down to 3 cards." 
                     }
                 }
             }
@@ -74,6 +75,8 @@ export class Militia extends ActionCardDefinition
         //no one to attack, clean up
         if(bAllDone)
             game.finishExecution(this);
+        else
+            player.status = "Waiting for other players to discard";
     }
     
     public onSelection(game: Game, player: Player, cards: Card[]) : boolean{
@@ -108,8 +111,9 @@ export class Militia extends ActionCardDefinition
         }
 
         this.playersDone[player.index] = true;
-        player.userSelections.splice(player.userSelections.length - 1, 1);
-        
+        player.popSelection();
+        player.status = "";
+
         //see if everyone has discarded, and if they have, clean up
         let bAllDone = true;
         for(const done of this.playersDone)
@@ -121,7 +125,10 @@ export class Militia extends ActionCardDefinition
         }
 
         if(bAllDone)
+        {
             game.finishExecution(this);
+            game.players[game.currentPlayer].status = "";
+        }
 
         return true;
     }

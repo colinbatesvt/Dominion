@@ -20,11 +20,22 @@ export class Mine extends ActionCardDefinition
     public execute(game: Game, player: Player) 
     {
         //you may trash a treasure from your hand. Gain a Treasure to your hand costing up to 3 more than it
-        const selection: UserSelection[] = [];
-        const trash: UserSelection = {location: Location.hand, isValid: (card: Card) => {return card.type === CardType.treasure;}, count: 1}
-        selection.push(trash)
-        player.addSelection(selection, game);
-        this.handPick = true;
+        //check if they have a treasure card to discard
+        let valid = false;
+        for(const card of player.hand)
+        {
+            if(card.type === CardType.treasure)
+                valid = true;
+        }
+        if(valid === true)
+        {
+            const selection: UserSelection[] = [];
+            const trash: UserSelection = {location: Location.hand, isValid: (card: Card) => {return card.type === CardType.treasure;}, count: 1}
+            selection.push(trash)
+            player.pushSelection(selection, game);
+            this.handPick = true;
+            player.status = "Choose a treasure card from your hand to trash"
+        }
     }
 
     public onSelection(game: Game, player: Player, cards: Card[]) : boolean{
@@ -48,17 +59,18 @@ export class Mine extends ActionCardDefinition
                 player.hand.splice(handIndex, 1);
                 game.trashCard(trashCard);
                 //remove this selection, add gain selection
-                player.userSelections.splice(player.userSelections.length -1, 1);
+                player.popSelection();
 
-                //TODO: test this, I have no idea if referencing trashCard in that function will work
                 const selection: UserSelection[] = [];
+                const library: CardLibrary = new CardLibrary;
+                const maxBuy: Number = library.getCardDefinition(trashCard.name).cost + 3;
                 const gain: UserSelection = {location: Location.shop, isValid: (card: Card) => {
-                    const library: CardLibrary = new CardLibrary;
-                    return library.getCardDefinition(card.name).cost <= library.getCardDefinition(trashCard.name).cost + 3;
+                    return library.getCardDefinition(card.name).cost <= maxBuy;
                 }, count: 1}
                 selection.push(gain)
-                player.addSelection(selection, game);
+                player.pushSelection(selection, game);
                 this.handPick = false;
+                player.status = "Gain a treasure card costing up to " + maxBuy;
             }
             else 
             {
@@ -74,8 +86,9 @@ export class Mine extends ActionCardDefinition
             {
                 player.gain(Location.discard, gainCard);
                 game.shop[gainCard.name].splice(0, 1);
-                player.userSelections.splice(player.userSelections.length -1, 1);
+                player.popSelection();
                 game.finishExecution(this);
+                player.status = "";
             }
             else
             {

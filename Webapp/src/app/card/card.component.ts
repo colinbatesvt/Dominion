@@ -11,15 +11,17 @@ import { GameService } from '../game.service';
 export class CardComponent implements OnInit {
 
   @Input() card: Card;
-  @Input() selected: boolean;
+  @Input() selected = false;
+  @Input() highlighted = false;
   @Input() orientation: string;
   @Input() revealed: boolean;
 
-  @HostListener('click') onClick() {
-    this.gameService.onCardSelected(this.card);
-  }
+  hovered: boolean;
 
-  constructor(private gameService: GameService) { }
+
+  constructor(private gameService: GameService) {
+    this.hovered = false;
+   }
 
   ngOnInit() {
   }
@@ -37,5 +39,13 @@ export class CardComponent implements OnInit {
       url += 'Card_Back.jpg';
     }
     return url;
+  }
+
+  onClick() {
+    this.gameService.onCardSelected(this.card);
+  }
+
+  onView() {
+    this.gameService.setViewedCard(this.card);
   }
 }
