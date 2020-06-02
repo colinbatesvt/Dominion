@@ -16,12 +16,12 @@ for(let i = 0; i < split.length - 2; i++)
     homePageLocation += "\\";
 }
 
-app.use(express.static(homePageLocation + '\\WebApp\\dist\\Dominion\\'));
+app.use(express.static(homePageLocation + '\\release\\Dominion\\'));
 const router = express.Router();
 
 // serve home page
 app.get('/', (req, res) => {
-    const index = homePageLocation + 'WebApp\\dist\\Dominion\\index.html';
+    const index = homePageLocation + 'release\\Dominion\\index.html';
     res.sendFile(path.join(index));
 });
 

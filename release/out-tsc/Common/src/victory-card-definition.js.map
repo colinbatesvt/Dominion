@@ -1,0 +1,1 @@
+{"version":3,"file":"victory-card-definition.js","sourceRoot":"","sources":["../../../../../Common/src/victory-card-definition.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,cAAc,EAAE,QAAQ,EAAE,MAAM,mBAAmB,CAAC;AAE7D,MAAM,OAAgB,qBAAsB,SAAQ,cAAc;IAE9D;QACI,KAAK,EAAE,CAAC;QACR,IAAI,CAAC,QAAQ,GAAG,QAAQ,CAAC,OAAO,CAAC;IACrC,CAAC;CAGJ"}
