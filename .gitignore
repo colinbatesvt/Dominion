@@ -38,8 +38,8 @@ bower_components
 build/Release
 
 # Dependency directories
-node_modules/
-jspm_packages/
+Server/node_modules/
+Server/jspm_packages/
 Webapp/node_modules/
 Webapp/jspm_packages/
 
@@ -82,7 +82,7 @@ typings/
 
 # Nuxt.js build / generate output
 .nuxt
-dist
+Server/dist
 Webapp/dist
 Common/dist
 
