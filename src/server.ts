@@ -3,7 +3,7 @@ import path from 'path'
 import { SocketManager } from './socket-manager';
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || '3000';
 
 const currentDir = __dirname;
 const split = currentDir.split('\\');
