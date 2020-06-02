@@ -17,6 +17,8 @@ for(let i = 0; i < split.length - 2; i++)
 }
 
 app.use(express.static(homePageLocation + '\\release\\Dominion\\'));
+const test = homePageLocation + 'release\\Dominion\\index.html';
+console.log(test);
 const router = express.Router();
 
 // serve home page
