@@ -3,7 +3,7 @@ import path from 'path'
 import { SocketManager } from './socket-manager';
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = 3000;
 
 const currentDir = __dirname;
 const split = currentDir.split('\\');
@@ -25,8 +25,11 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(index));
 });
 
-// launch server and listen on port
-const server = app.listen(port, () => {
+// launch server and listen on 3000
+const server = app.listen(port, err => {
+  if (err) {
+    return console.error(err);
+  }
   return console.log(`server is listening on ${port}`);
 });
 
