@@ -34,7 +34,7 @@
         "command":"tsc",
         "args": ["--project", "tsconfig.json"],
         "options": {
-            "cwd": "${workspaceRoot}/Server"
+            "cwd": "${workspaceRoot}"
           }
         
     },
