@@ -7,8 +7,10 @@
   },
   "main": "dist/server.js",
   "scripts": {
+	"tsc": "tsc"
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "tsc && node dist/src/server.js"
+	"postinstall": "npm run tsc",
+    "start": "node dist/src/server.js"
   },
   "author": "Colin Bates",
   "license": "ISC",
