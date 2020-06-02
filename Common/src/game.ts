@@ -109,6 +109,7 @@ export class Game {
                     {
                         humanPlayer.socketId = socketId;
                         humanPlayer.SetConnected(true);
+                        console.log(humanPlayer.name + ' reconnected. Socket ID = ' + socketId);
                         return "";
                     }
                 }

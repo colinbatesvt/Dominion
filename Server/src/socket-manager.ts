@@ -68,8 +68,8 @@ export class SocketManager implements ServerInterface{
                 if(opOk === true)
                 {
                     this.socketsByGameName[data.gameName].push(connectedSocket);
+                    this.io.sockets.emit('games-updated', this.gameList);
                 }
-                this.io.sockets.emit('games-updated', this.gameList);
             });
 
             connectedSocket.on('create-game', (gameName: string, resultCallback: any) => {
@@ -159,7 +159,6 @@ export class SocketManager implements ServerInterface{
             });
 
             connectedSocket.on('disconnect', () => {
-                console.log('player left');
                 for(const game of this.gameList)
                 {
                     const foundPlayer: Player | undefined = game.findPlayerById(connectedSocket.id);

@@ -142,7 +142,6 @@ export class GameService {
   public onGamesUpdated = () => {
     return Observable.create((observer) => {
       this.socket.on('games-updated', (games: Game[]) => {
-        console.log('games updated');
         if (this.game !== undefined)
         {
           let bFound = false;

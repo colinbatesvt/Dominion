@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { GameService } from '../game.service';
 import { Game } from '../../../../Common/src/game';
 import { StatusService } from '../status.service';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-join-game',
@@ -18,9 +19,11 @@ export class JoinGameComponent implements OnInit {
 
   status: string;
 
-  constructor(private gameService: GameService, private statusService: StatusService) {
+  constructor(private gameService: GameService, private statusService: StatusService, private cookieService: CookieService) {
+    this.gameNames = [];
+    this.playerCounts = [];
     this.newGameName = '';
-    this.playerName = '';
+    this.playerName = this.cookieService.get('player-name');
     this.playerColor = '#000000';
     this.status = '';
   }
@@ -50,6 +53,7 @@ export class JoinGameComponent implements OnInit {
   {
     if (this.playerName !== '')
     {
+      this.cookieService.set('player-name', this.playerName);
       this.gameService.joinGame(this.playerName, this.playerColor, gameName);
     }
     else
@@ -74,6 +78,7 @@ export class JoinGameComponent implements OnInit {
     }
     else
     {
+      this.cookieService.set('player-name', this.playerName);
       this.gameService.createGame(this.playerName, this.playerColor, this.newGameName);
       this.newGameName = '';
     }

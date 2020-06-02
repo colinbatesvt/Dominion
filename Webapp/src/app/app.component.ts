@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { GameService } from './game.service';
 import { Game } from '../../../Common/src/game';
 import { Card } from '../../../Common/src/card';
+import { CookieService } from 'ngx-cookie-service';
+import { StatusService } from './status.service';
 
 @Component({
   selector: 'app-root',
@@ -32,8 +34,6 @@ export class AppComponent implements OnInit{
     this.gameService.onViewedPileChanged().subscribe((viewedPile: Card[]) => {
       this.viewedPile = viewedPile;
     });
-    // TEST CODE
-    this.gameService.createGame('Colin', '#0000FF', 'Test Game');
   }
 
   onCloseSelected() {
