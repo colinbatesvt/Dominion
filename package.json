@@ -9,7 +9,7 @@
     "scripts": {
 	  "tsc": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
-	  "postinstall": "cd Common && npm run tsc && cd ../Webapp && ng build -prod",
+	  "postinstall": "cd Common && npm run tsc && cd ../Webapp && ng build -prod && cd .. && npm run tsc",
     "start": "node dist/src/server.js"
   },
   "author": "Colin Bates",
@@ -23,6 +23,7 @@
     "angular": "^1.7.9",
     "async": "^3.2.0",
     "express": "^4.17.1",
-    "socket.io": "^2.3.0"
+    "socket.io": "^2.3.0",
+    "@angular/cli": "~9.1.6"
   }
 }
