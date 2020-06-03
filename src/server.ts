@@ -6,6 +6,7 @@ const app = express();
 const PORT = process.env.PORT || 3000
 
 const currentDir = __dirname;
+console.log(currentDir);
 const split = currentDir.split('\\');
 
 let homePageLocation = "";
@@ -16,14 +17,14 @@ for(let i = 0; i < split.length - 2; i++)
     homePageLocation += "\\";
 }
 
-app.use(express.static(homePageLocation + '\\release\\Dominion\\'));
-const test = homePageLocation + 'release\\Dominion\\index.html';
+app.use(express.static(currentDir + '\\release\\Dominion\\'));
+const test = currentDir + '\\release\\Dominion\\index.html';
 console.log(test);
 const router = express.Router();
 
 // serve home page
 app.get('/', (req, res) => {
-    const index = homePageLocation + 'release\\Dominion\\index.html';
+    const index = currentDir + 'release\\Dominion\\index.html';
     res.sendFile(path.join(index));
 });
 
