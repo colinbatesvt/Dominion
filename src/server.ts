@@ -13,7 +13,6 @@ if(isWin === true)
 }
 const currentDir = __dirname;
 const split = currentDir.split(directorySeparator);
-console.log(split);
 
 let homePageLocation = "";
 for(let i = 0; i < split.length - 2; i++)
@@ -23,6 +22,7 @@ for(let i = 0; i < split.length - 2; i++)
     homePageLocation += directorySeparator;
 }
 
+app.use(express.static(homePageLocation + 'Webapp' + directorySeparator + 'dist' + directorySeparator +'Dominion' + directorySeparator + 'dist'));
 app.use(express.static(homePageLocation + 'Webapp' + directorySeparator + 'dist' + directorySeparator +'Dominion' + directorySeparator));
 const router = express.Router();
 

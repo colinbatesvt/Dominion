@@ -7,7 +7,7 @@ import { Card } from "../card";
 export class Cellar extends ActionCardDefinition
 {
     public static cardName: string = "cellar";
-    
+
     public constructor() {
         super();
         this.cost = 2;
@@ -18,9 +18,9 @@ export class Cellar extends ActionCardDefinition
         // + 1 action
         player.actions++;
 
-        //discard any number of cards, then draw that many
+        // discard any number of cards, then draw that many
         const pickDiscard: UserSelection = {location: Location.hand, isValid: (card: Card) => {return true;}, count: -1};
-        let selections: UserSelection[] = [];
+        const selections: UserSelection[] = [];
         selections.push(pickDiscard);
 
         const prompts: string[] = ["discard"];
@@ -60,7 +60,7 @@ export class Cellar extends ActionCardDefinition
                     player.discardCard(card);
                 }
 
-                player.draw(cards.length);    
+                player.draw(cards.length);
                 player.popSelection();
                 player.popPrompt();
                 game.finishExecution(this);
