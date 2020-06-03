@@ -23,14 +23,12 @@ for(let i = 0; i < split.length - 2; i++)
     homePageLocation += directorySeparator;
 }
 
-app.use(express.static(homePageLocation + 'release' + directorySeparator +'Dominion' + directorySeparator));
-const test = homePageLocation + 'release' + directorySeparator + 'Dominion' + directorySeparator + 'index.html';
-console.log(test);
+app.use(express.static(homePageLocation + 'WebApp' + directorySeparator + 'dist' + directorySeparator +'Dominion' + directorySeparator));
 const router = express.Router();
 
 // serve home page
 app.get('/', (req, res) => {
-    const index = homePageLocation + 'release\\Dominion\\index.html';
+    const index = homePageLocation + 'WebApp' + directorySeparator + 'dist' + directorySeparator +'Dominion' + directorySeparator +'index.html';
     res.sendFile(path.join(index));
 });
 

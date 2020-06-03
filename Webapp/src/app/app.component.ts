@@ -18,6 +18,7 @@ export class AppComponent implements OnInit{
   viewedPile: Card[];
 
   constructor(public gameService: GameService) {
+    console.log(window.location.protocol + '//' + window.location.host);
     this.viewedCard = undefined;
     this.viewedPile = [];
   }

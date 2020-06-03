@@ -29,7 +29,7 @@ import { ShopComponent } from './shop/shop.component';
 import { GameOverComponent } from './game-over/game-over.component';
 import {CookieService } from 'ngx-cookie-service';
 
-const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
+const config: SocketIoConfig = { url: window.location.protocol + '//' + window.location.host, options: {} };
 
 
 @NgModule({
