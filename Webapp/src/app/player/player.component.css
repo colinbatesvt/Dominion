@@ -33,6 +33,7 @@
     grid-column-end: 9;
     display: grid;
     grid-template-columns: repeat(auto-fill, 12%);
+    grid-template-rows: 100%;
 }
 
 #bottomPlayerInPlay {
@@ -83,6 +84,7 @@
     height: 100%;
     width: 100%;
     grid-template-rows: repeat(auto-fill, 10%);
+    grid-template-columns: 100%;
 }
 
 #leftPlayerInPlay{
@@ -122,7 +124,8 @@
     grid-column-start: 3;
     grid-column-end: 8;
     display: grid;
-    grid-template-columns: repeat(auto-fill, 5%);
+    grid-template-columns: repeat(auto-fill, 10%);
+    grid-template-rows: 100%;
 }
 
 #topPlayerRevealed {
@@ -177,6 +180,7 @@
     height: 100%;
     width: 100%;
     grid-template-rows: repeat(auto-fill, 10%);
+    grid-template-columns: 100%;
 }
 
 #rightPlayerRevealed {
