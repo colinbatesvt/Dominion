@@ -35,7 +35,7 @@ export class CardPileComponent implements OnInit {
     }
     else
     {
-      url += 'Card_Back.jpg';
+      url += 'card_back.jpg';
     }
     return url;
   }

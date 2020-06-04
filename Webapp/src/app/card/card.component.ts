@@ -36,7 +36,7 @@ export class CardComponent implements OnInit {
     }
     else
     {
-      url += 'Card_Back.jpg';
+      url += 'card_back.jpg';
     }
     return url;
   }
