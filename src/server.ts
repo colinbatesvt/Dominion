@@ -22,8 +22,7 @@ for(let i = 0; i < split.length - 2; i++)
     homePageLocation += directorySeparator;
 }
 
-app.use(express.static(homePageLocation + 'Webapp' + directorySeparator + 'dist' + directorySeparator +'Dominion' + directorySeparator + 'dist'));
-app.use(express.static(homePageLocation + 'Webapp' + directorySeparator + 'dist' + directorySeparator +'Dominion' + directorySeparator));
+app.use(express.static(homePageLocation + 'Webapp' + directorySeparator + 'dist' + directorySeparator +'Dominion'));
 const router = express.Router();
 
 // serve home page

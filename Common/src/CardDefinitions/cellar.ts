@@ -1,7 +1,6 @@
 import { ActionCardDefinition } from "../action-card-definition";
 import { Game } from "../game";
 import { Player, Location, UserSelection } from "../player";
-import { CardType } from "../card-definition";
 import { Card } from "../card";
 
 export class Cellar extends ActionCardDefinition

@@ -20,7 +20,7 @@ import { Woodcutter } from "./CardDefinitions/woodcutter";
 
 export class CardLibrary {
 
-    private cardIndex: Record<string, CardDefinition>; //map of card names to card definitions
+    private cardIndex: Record<string, CardDefinition>; // map of card names to card definitions
     private nextCardId: number;
     private presetIndex: Record<string, string[]>; // map of preset names to card names in that preset
 
@@ -67,10 +67,13 @@ export class CardLibrary {
     public getAllCards() : Card[]
     {
        const cards: Card[] = [];
-       for(let card in this.cardIndex)
+       for(const card in this.cardIndex)
        {
-           cards.push(this.cardIndex[card].getCard(this.nextCardId))
-           this.nextCardId++;
+           if(card !== undefined)
+           {
+                cards.push(this.cardIndex[card].getCard(this.nextCardId))
+                this.nextCardId++;
+           }
        }
 
        return cards;
@@ -94,7 +97,7 @@ export class CardLibrary {
     public getBasicCardNames() : string[]
     {
        const cards: string[] = [];
-       for(let card in this.cardIndex)
+       for(const card in this.cardIndex)
        {
            if (!this.cardIndex[card].isKingdom)
            {

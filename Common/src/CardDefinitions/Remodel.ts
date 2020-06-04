@@ -14,10 +14,10 @@ export class Remodel extends ActionCardDefinition
         super();
         this.cost = 4;
         this.imageName = "remodel.jpg";
-        this,this.handPick = true;
+        this.handPick = true;
     }
 
-    public execute(game: Game, player: Player) 
+    public execute(game: Game, player: Player)
     {
         // Trash a card from your hand gain a card costing up to 2 more than it
         if(player.hand.length > 0)
@@ -29,7 +29,7 @@ export class Remodel extends ActionCardDefinition
             player.status = "Choose a card from your hand to trash";
             this.handPick = true;
         }
-        else 
+        else
         {
             game.finishExecution(this);
         }
@@ -37,10 +37,10 @@ export class Remodel extends ActionCardDefinition
 
     public onSelection(game: Game, player: Player, cards: Card[]) : boolean{
 
-        //if this is the trash selection...
+        // if this is the trash selection...
         if(this.handPick === true)
         {
-            //selection should be a single card
+            // selection should be a single card
             const trashCard: Card = cards[0];
             let handIndex = -1;
             for(let i = 0; i < player.hand.length; i++)
@@ -55,10 +55,10 @@ export class Remodel extends ActionCardDefinition
             {
                 player.hand.splice(handIndex, 1);
                 game.trashCard(trashCard);
-                //remove this selection, add gain selection
+                // remove this selection, add gain selection
                 player.popSelection();
-                const library: CardLibrary = new CardLibrary;
-                const maxBuy: Number = library.getCardDefinition(trashCard.name).cost + 2;
+                const library: CardLibrary = new CardLibrary();
+                const maxBuy: number = library.getCardDefinition(trashCard.name).cost + 2;
                 player.status = "Gain a card from the shop costing up to " + maxBuy;
                 const selection: UserSelection[] = [];
                 const gain: UserSelection = {location: Location.shop, isValid: (card: Card) => {
@@ -68,16 +68,16 @@ export class Remodel extends ActionCardDefinition
                 player.pushSelection(selection, game);
                 this.handPick = false;
             }
-            else 
+            else
             {
                 return false;
             }
         }
-        else 
+        else
         {
-            //selection should be a single card
+            // selection should be a single card
             const gainCard: Card = cards[0];
-            //verify it's a card on top of it's shop pile
+            // verify it's a card on top of it's shop pile
             if(game.shop[gainCard.name][0].id === gainCard.id)
             {
                 player.gain(Location.discard, gainCard);

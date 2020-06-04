@@ -17,7 +17,7 @@ export abstract class TreasureCardDefinition extends CardDefinition {
         return this.coinValue;
     }
 
-    //increase the player's coin value when the card is played
+    // increase the player's coin value when the card is played
     public execute(game: Game, player: Player) {
         player.coins += this.getCoinValue();
         game.finishExecution(this);

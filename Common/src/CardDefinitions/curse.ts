@@ -11,7 +11,7 @@ export class Curse extends VictoryCardDefinition
         this.isKingdom = false;
         this.imageName = "curse.jpg";
     }
-    
+
     GetVictoryPoints(): number {
         return -1;
     }

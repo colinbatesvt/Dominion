@@ -17,10 +17,10 @@ export class Mine extends ActionCardDefinition
         this.handPick = true;
     }
 
-    public execute(game: Game, player: Player) 
+    public execute(game: Game, player: Player)
     {
-        //you may trash a treasure from your hand. Gain a Treasure to your hand costing up to 3 more than it
-        //check if they have a treasure card to discard
+        // you may trash a treasure from your hand. Gain a Treasure to your hand costing up to 3 more than it
+        // check if they have a treasure card to discard
         let valid = false;
         for(const card of player.hand)
         {
@@ -40,10 +40,10 @@ export class Mine extends ActionCardDefinition
 
     public onSelection(game: Game, player: Player, cards: Card[]) : boolean{
 
-        //if this is the trash selection...
+        // if this is the trash selection...
         if(this.handPick === true)
         {
-            //selection should be a single card
+            // selection should be a single card
             const trashCard: Card = cards[0];
             let handIndex = -1;
             for(let i = 0; i < player.hand.length; i++)
@@ -58,12 +58,12 @@ export class Mine extends ActionCardDefinition
             {
                 player.hand.splice(handIndex, 1);
                 game.trashCard(trashCard);
-                //remove this selection, add gain selection
+                // remove this selection, add gain selection
                 player.popSelection();
 
                 const selection: UserSelection[] = [];
-                const library: CardLibrary = new CardLibrary;
-                const maxBuy: Number = library.getCardDefinition(trashCard.name).cost + 3;
+                const library: CardLibrary = new CardLibrary();
+                const maxBuy: number = library.getCardDefinition(trashCard.name).cost + 3;
                 const gain: UserSelection = {location: Location.shop, isValid: (card: Card) => {
                     return library.getCardDefinition(card.name).cost <= maxBuy;
                 }, count: 1}
@@ -72,16 +72,16 @@ export class Mine extends ActionCardDefinition
                 this.handPick = false;
                 player.status = "Gain a treasure card costing up to " + maxBuy;
             }
-            else 
+            else
             {
                 return false;
             }
         }
-        else 
+        else
         {
-            //selection should be a single card
+            // selection should be a single card
             const gainCard: Card = cards[0];
-            //verify it's a card on top of it's shop pile
+            // verify it's a card on top of it's shop pile
             if(game.shop[gainCard.name][0].id === gainCard.id)
             {
                 player.gain(Location.discard, gainCard);

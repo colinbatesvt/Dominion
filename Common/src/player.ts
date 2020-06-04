@@ -21,7 +21,7 @@ export enum PlayerState {
 
 export interface UserSelection {
     location: Location;
-    isValid: (card:Card) => boolean; //function that returns whether a given card can be added to the selection
+    isValid: (card:Card) => boolean; // function that returns whether a given card can be added to the selection
     count: number
 }
 
@@ -53,7 +53,7 @@ export abstract class Player {
 
     constructor(playerName: string, playerColor: string, index: number)
     {
-        this.library = new CardLibrary;
+        this.library = new CardLibrary();
 
         this.name = playerName;
         this.index = index;
@@ -91,12 +91,12 @@ export abstract class Player {
                 break;
 
             case Location.discard:
-                this.discard.unshift(card); //add to front of discard so player can see it
+                this.discard.unshift(card); // add to front of discard so player can see it
                 break;
         }
     }
 
-    public draw(drawCount: Number) {
+    public draw(drawCount: number) {
         for(let i = 0; i < drawCount; i++)
         {
             if(this.deck.length > 0)
@@ -106,8 +106,8 @@ export abstract class Player {
                     this.hand.push(card);
                 }
             }
-            //no cards in deck, move cards from discard to deck
-            else 
+            // no cards in deck, move cards from discard to deck
+            else
             {
                 while(this.discard.length > 0)
                 {
@@ -134,8 +134,8 @@ export abstract class Player {
         // perform a fisher-yates shuffle on the deck array
         // this is done by swapping each element of the array with a random previous element
         for (let i = this.deck.length - 1; i > 0; i--) {
-            let j = Math.floor(Math.random() * (i + 1)); // random index from 0 to i
-        
+            const j = Math.floor(Math.random() * (i + 1)); // random index from 0 to i
+
             [this.deck[i], this.deck[j]] = [this.deck[j], this.deck[i]];
         }
     }
@@ -153,10 +153,10 @@ export abstract class Player {
         this.discard.push(card);
     }
 
-    //execute the clean up phase
+    // execute the clean up phase
     public cleanUp() {
 
-        //move revealed into discard (prob shouldn't be any at this point...)
+        // move revealed into discard (prob shouldn't be any at this point...)
         while(this.revealed.length > 0)
         {
             const card : Card = this.revealed[0];
@@ -165,7 +165,7 @@ export abstract class Player {
             this.discard.push(card);
         }
 
-        //move hand into discard
+        // move hand into discard
         while(this.hand.length > 0)
         {
             const card : Card = this.hand[0];
@@ -175,7 +175,7 @@ export abstract class Player {
             this.discard.push(card);
         }
 
-        //move in play into discard
+        // move in play into discard
         while(this.inPlay.length > 0)
         {
             const card : Card = this.inPlay[0];
@@ -185,34 +185,34 @@ export abstract class Player {
             this.discard.push(card);
         }
 
-        //draw a new hand
+        // draw a new hand
         this.draw(5);
 
-        //reset values
+        // reset values
         this.actions = 0;
         this.buys = 0;
         this.coins = 0;
     }
 
-    //how many cards of the given type are in our hand?
+    // how many cards of the given type are in our hand?
     public typeAmountInHand(type: CardType) : number {
         let count: number = 0;
 
-        //if the current player has actions left, but no action cards in their hand, move to buy phase
-        for(let card of this.hand)
+        // if the current player has actions left, but no action cards in their hand, move to buy phase
+        for(const card of this.hand)
         {
-            if(this.library.getCardDefinition(card.name).cardType == CardType.action)
+            if(this.library.getCardDefinition(card.name).cardType === CardType.action)
                 count++;
         }
 
         return count;
     }
 
-    //set the current state, and set what kind of card we want the user to pick
+    // set the current state, and set what kind of card we want the user to pick
     public setState(state: PlayerState, game: Game){
         this.state = state;
 
-        //when moving to a new phase, we start fresh
+        // when moving to a new phase, we start fresh
         this.userSelections = [];
         this.userPrompts = [];
     }
@@ -222,11 +222,11 @@ export abstract class Player {
         // tell the user what we're looking for
         if(this.state === PlayerState.WaitingForTurn)
         {
-            //nothing to pick
+            // nothing to pick
         }
         else if(this.state === PlayerState.Action)
         {
-            //in the action phase you choose actions to play from your hand
+            // in the action phase you choose actions to play from your hand
             const actionPhaseSelections: UserSelection[] = [];
             const pickAction : UserSelection = { location: Location.hand, isValid: (card: Card) => {return card.type === CardType.action;}, count: 1};
             actionPhaseSelections.push(pickAction);
@@ -236,7 +236,7 @@ export abstract class Player {
         }
         else if (this.state === PlayerState.Buy)
         {
-            //in the buy phase you can play treasure cards to get more coins, and use coins to buy from the shop
+            // in the buy phase you can play treasure cards to get more coins, and use coins to buy from the shop
             const buyPhaseSelections: UserSelection[] = [];
             const pickTreasure : UserSelection = { location: Location.hand, isValid: (card: Card) => {return card.type === CardType.treasure;}, count: 1};
             const pickShop : UserSelection = { location: Location.shop, isValid: (card: Card) => {return true;}, count: 1};
@@ -248,7 +248,7 @@ export abstract class Player {
         }
         else if(this.state === PlayerState.CleanUp)
         {
-            //nothing to pick
+            // nothing to pick
         }
     }
 
@@ -256,7 +256,7 @@ export abstract class Player {
     {
         this.userSelections.push(selection);
 
-        //if we give the AI a selection, just do it
+        // if we give the AI a selection, just do it
         if(this instanceof AIPlayer)
         {
             const ai: AIPlayer = this as AIPlayer;
@@ -270,7 +270,7 @@ export abstract class Player {
         return popped;
     }
 
-    public pushPrompt(prompts: string[]) 
+    public pushPrompt(prompts: string[])
     {
         this.userPrompts.push(prompts);
     }
@@ -282,6 +282,8 @@ export abstract class Player {
     }
 }
 
+// leave me alone lint
+// tslint:disable-next-line:max-classes-per-file
 export class HumanPlayer extends Player{
 
     public socketId: any;
@@ -293,13 +295,14 @@ export class HumanPlayer extends Player{
         this.connected = true;
         this.setupReady = false;
     }
-    
+
     public SetConnected(connected: boolean)
     {
         this.connected = connected;
     }
 }
 
+// tslint:disable-next-line:max-classes-per-file
 export class AIPlayer extends Player{
 
     constructor(playerName: string, playerColor: string, index: number, game: Game) {
@@ -308,10 +311,10 @@ export class AIPlayer extends Player{
         // this.game = game;
     }
 
-    //ugly sleep, yuck
+    // ugly sleep, yuck
     public wait(ms: number){
-        var start = new Date().getTime();
-        var end = start;
+        const start = new Date().getTime();
+        let end = start;
         while(end < start + ms) {
           end = new Date().getTime();
        }
@@ -319,7 +322,7 @@ export class AIPlayer extends Player{
 
     public doCurrentSelection(game: Game) {
 
-        //wait a bit to let users see what's happening
+        // wait a bit to let users see what's happening
         this.wait(1000);
 
         if(this.userSelections.length > 0)
@@ -332,7 +335,7 @@ export class AIPlayer extends Player{
                 switch(selection.location)
                 {
                     case Location.hand:
-                        let cards: Card[] = [];
+                        const cards: Card[] = [];
                         for (const card of this.hand)
                         {
                             if(selection.isValid(card) === true)
@@ -340,14 +343,14 @@ export class AIPlayer extends Player{
                                 cards.push(card);
                                 if( cards.length === selection.count)
                                 {
-                                    //tell the game we choose these cards
+                                    // tell the game we choose these cards
                                     if(game.onCardsSelected(this.index, cards) === true)
                                         return;
                                 }
                             }
                         }
-                        //didn't find anything, send back a blank
-                        if(i == currentSelection.length - 1)
+                        // didn't find anything, send back a blank
+                        if(i === currentSelection.length - 1)
                         {
                             game.onCardsSelected(this.index, cards);
                         }
@@ -358,19 +361,22 @@ export class AIPlayer extends Player{
                     case Location.shop:
                         for(const card in game.shop)
                         {
-                           let cards: Card[] = [];
-                           cards.push(game.shop[card][0]);
+                            if(card !== undefined)
+                            {
+                                const selectedCards: Card[] = [];
+                                selectedCards.push(game.shop[card][0]);
 
-                           if(game.onCardsSelected(this.index, cards) === true)
-                            return;
+                                if(game.onCardsSelected(this.index, selectedCards) === true)
+                                    return;
+                            }
                         }
-                        //somehow none of the cards in the shop worked, uh oh
+                        // somehow none of the cards in the shop worked, uh oh
                         break;
 
                     case Location.discard:
-                        //need to implement this if it's ever a thing
+                        // need to implement this if it's ever a thing
                         break;
-                    
+
                     case Location.inPlay:
                         break;
                 }

@@ -28,31 +28,29 @@ export abstract class CardDefinition{
 
     public getCard(id: number): Card{
         const card: Card = {
-            id: id,
+            id,
             imageName: this.GetImageName(),
-            name: (<typeof CardDefinition> this.constructor).cardName, //yuck, but this is the only way as far as I can tell
+            name: (this.constructor as typeof CardDefinition).cardName, // yuck, but this is the only way as far as I can tell
             isKingdom: this.isKingdom,
             type: this.cardType,
             revealedToOthers: false
         };
-        
+
         return card;
     }
 
     public getCardName(): string{
-        return (<typeof CardDefinition> this.constructor).cardName
+        return (this.constructor as typeof CardDefinition).cardName
     }
 
     public GetImageName() : string {
         return this.imageName;
     }
 
-    //execute the card's behaviour, this should be overriden by concrete subclasses that have behaviour on the card being played
-    public execute(game: Game, player: Player) {
+    // execute the card's behaviour, this should be overriden by concrete subclasses that have behaviour on the card being played
+    public execute(game: Game, player: Player) {return;}
 
-    }
-
-    //for cards that require the user to select something, they can override this
+    // for cards that require the user to select something, they can override this
     public onSelection(game: Game, player: Player, cards: Card[]) : boolean{
         return true;
     }

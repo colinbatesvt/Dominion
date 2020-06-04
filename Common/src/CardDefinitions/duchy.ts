@@ -11,7 +11,7 @@ export class Duchy extends VictoryCardDefinition
         this.isKingdom = false;
         this.imageName = "duchy.jpg";
     }
-    
+
     GetVictoryPoints(): number {
         return 3;
     }

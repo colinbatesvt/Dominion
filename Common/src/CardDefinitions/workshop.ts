@@ -19,7 +19,7 @@ export class Workshop extends ActionCardDefinition
 
         const selection: UserSelection[] = [];
         const gain: UserSelection = {location: Location.shop, isValid: (card: Card) => {
-            const library: CardLibrary = new CardLibrary;
+            const library: CardLibrary = new CardLibrary();
             return library.getCardDefinition(card.name).cost <= 4;
         }, count: 1}
         selection.push(gain)

@@ -6,7 +6,7 @@ import { Card } from "../card";
 
 export class Militia extends ActionCardDefinition
 {
-    
+
     public static cardName: string = "militia";
     private playersDone: boolean[]; // used to track if users have discarded their cards
 
@@ -20,10 +20,10 @@ export class Militia extends ActionCardDefinition
 
     public execute(game: Game, player: Player) {
         player.coins += 2;
-        
+
         this.playersDone = [];
 
-        //each other player discards down to 3 cards in hand
+        // each other player discards down to 3 cards in hand
         for(const attackedPlayer of game.players)
         {
             if(attackedPlayer.name !== player.name)
@@ -38,14 +38,14 @@ export class Militia extends ActionCardDefinition
                         card.revealedToOthers = true;
                     }
                 }
-                //immune, don't wait for their response
+                // immune, don't wait for their response
                 if(bImmune === true)
                 {
                     this.playersDone.push(true);
                 }
                 else
                 {
-                    //not immune, but make sure they have more than three cards to discard
+                    // not immune, but make sure they have more than three cards to discard
                     if(attackedPlayer.hand.length > 3)
                     {
                         this.playersDone.push(false);
@@ -53,7 +53,7 @@ export class Militia extends ActionCardDefinition
                         const discard: UserSelection = {location: Location.hand, isValid: (card: Card) => {return true;}, count: attackedPlayer.hand.length - 3}
                         selection.push(discard)
                         attackedPlayer.pushSelection(selection, game);
-                        attackedPlayer.status = "Discard down to 3 cards." 
+                        attackedPlayer.status = "Discard down to 3 cards.";
                     }
                 }
             }
@@ -72,16 +72,16 @@ export class Militia extends ActionCardDefinition
             }
         }
 
-        //no one to attack, clean up
+        // no one to attack, clean up
         if(bAllDone)
             game.finishExecution(this);
         else
             player.status = "Waiting for other players to discard";
     }
-    
+
     public onSelection(game: Game, player: Player, cards: Card[]) : boolean{
 
-        //make sure everything in the selection is in that players hand
+        // make sure everything in the selection is in that players hand
         let valid = true;
         for(const card of cards)
         {
@@ -99,7 +99,7 @@ export class Militia extends ActionCardDefinition
             }
         }
 
-        //if the selection was valid, discard the selected cards
+        // if the selection was valid, discard the selected cards
         if(valid === false)
             return false;
         else
@@ -114,7 +114,7 @@ export class Militia extends ActionCardDefinition
         player.popSelection();
         player.status = "";
 
-        //see if everyone has discarded, and if they have, clean up
+        // see if everyone has discarded, and if they have, clean up
         let bAllDone = true;
         for(const done of this.playersDone)
         {

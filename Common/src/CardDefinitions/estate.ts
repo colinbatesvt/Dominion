@@ -12,7 +12,7 @@ export class Estate extends VictoryCardDefinition
         this.isKingdom = false;
         this.imageName = "estate.jpg";
     }
-    
+
     GetVictoryPoints(): number {
         return 1;
     }

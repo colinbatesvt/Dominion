@@ -12,7 +12,7 @@ export class Province extends VictoryCardDefinition
         this.isKingdom = false;
         this.imageName = "province.jpg";
     }
-    
+
     GetVictoryPoints(): number {
         return 6;
     }
