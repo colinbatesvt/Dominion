@@ -12,6 +12,7 @@ export class CardPileComponent implements OnInit {
   @Input() cards: Card[];
   @Input() revealed: boolean; // can users see the cards in the pile? or should we show the card back?
   @Input() orientation: string;
+  @Input() highlighted = false;
   @Input() location = '';
   @Input() showLocationLabel = false;
 

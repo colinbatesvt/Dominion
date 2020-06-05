@@ -1,6 +1,7 @@
 <p id = "title" *ngIf="showLocationLabel === true">{{location}}</p>
 <img  *ngIf="cards.length > 0" 
 [class.hovered]="hovered"
+[class.highlighted]="highlighted"
 [ngClass]="{
     'bottom': orientation==='bottom',
     'left': orientation==='left',

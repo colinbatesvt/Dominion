@@ -4,10 +4,10 @@
 </div>
 <div id="container">
   <div id="basicCards">
-    <app-card-pile *ngFor = "let item of basicCards" [location]="'Shop'" [cards]="item" [revealed] = "true" [orientation] ="'bottom'" (click)="onPileClicked(item)"></app-card-pile>
-    <app-card-pile [cards]="trash" [location]="'Trash'" [showLocationLabel]="true" [revealed] = "true" [orientation] ="'bottom'"></app-card-pile>
+    <app-card-pile *ngFor = "let item of basicCards" [location]="'Shop'" [cards]="item" [revealed] = "true" [orientation] ="'bottom'" [highlighted]="isPileHighlighted(item)" (click)="onPileClicked(item)"></app-card-pile>
+    <app-card-pile [cards]="trash" [location]="'Trash'" [showLocationLabel]="true" [revealed] = "true" [orientation] ="'bottom'" ></app-card-pile>
   </div>
   <div id="kingdomCards">
-    <app-card-pile *ngFor = "let item of kingdomCards" [cards]="item" [location]="'Shop'" [revealed] = "true" [orientation] ="'bottom'" (click)="onPileClicked(item)"></app-card-pile>
+    <app-card-pile *ngFor = "let item of kingdomCards" [cards]="item" [location]="'Shop'" [revealed] = "true" [orientation] ="'bottom'" [highlighted]="isPileHighlighted(item)" (click)="onPileClicked(item)"></app-card-pile>
   </div>
 </div>

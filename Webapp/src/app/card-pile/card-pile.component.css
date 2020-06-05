@@ -27,6 +27,14 @@ img {
   display: block;
 }
 
+.highlighted {
+  border-style: solid;
+  border-color: #ecff80;
+  border-radius: 5px;
+  border-width: 5px;
+  margin: 0px;
+}
+
 #count {
   background-color: white;
   position: absolute;

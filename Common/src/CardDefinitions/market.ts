@@ -10,6 +10,7 @@ export class Market extends ActionCardDefinition
         super();
         this.isKingdom = true;
         this.imageName = "market.jpg";
+        this.cost = 5;
     }
 
     public execute(game: Game, player: Player) {

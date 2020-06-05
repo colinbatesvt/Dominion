@@ -359,7 +359,17 @@ export class Game {
         this.players[this.currentPlayer].buys = 1;
         this.players[this.currentPlayer].coins = 0;
 
-        this.shop[Province.cardName].splice(1, 8);
+        if(this.players.length <= 2)
+        {
+            for (const card in this.shop)
+            {
+                if (this.shop[card][0].type === CardType.victory && card !== 'curse')
+                {
+                    const cardDefinition: CardDefinition = this.library.getCardDefinition(card);
+                    this.shop[card].splice(1, 4);
+                }
+            }
+        }
 
         /* for testing game over
         for(const player of this.players)
