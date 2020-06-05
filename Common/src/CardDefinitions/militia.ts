@@ -55,6 +55,10 @@ export class Militia extends ActionCardDefinition
                         attackedPlayer.pushSelection(selection, game);
                         attackedPlayer.status = "Discard down to 3 cards.";
                     }
+                    else
+                    {
+                        this.playersDone.push(true);
+                    }
                 }
             }
             else
