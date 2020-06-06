@@ -18,7 +18,11 @@ export class Cellar extends ActionCardDefinition
         player.actions++;
 
         // discard any number of cards, then draw that many
-        const pickDiscard: UserSelection = {location: Location.hand, isValid: (card: Card) => {return true;}, count: -1};
+        const pickDiscard: UserSelection = {
+            location: Location.hand,
+            isValid: (card: Card) => {return true;},
+            count: -1,
+            waitForPrompt: true};
         const selections: UserSelection[] = [];
         selections.push(pickDiscard);
 

@@ -23,8 +23,12 @@ export class Remodel extends ActionCardDefinition
         if(player.hand.length > 0)
         {
             const selection: UserSelection[] = [];
-            const trash: UserSelection = {location: Location.hand, isValid: (card: Card) => {return true;}, count: 1}
-            selection.push(trash)
+            const trash: UserSelection = {
+                location: Location.hand,
+                isValid: (card: Card) => {return true;},
+                count: 1,
+                waitForPrompt: false};
+            selection.push(trash);
             player.pushSelection(selection, game);
             player.status = "Choose a card from your hand to trash";
             this.handPick = true;
@@ -61,10 +65,12 @@ export class Remodel extends ActionCardDefinition
                 const maxBuy: number = library.getCardDefinition(trashCard.name).cost + 2;
                 player.status = "Gain a card from the shop costing up to " + maxBuy;
                 const selection: UserSelection[] = [];
-                const gain: UserSelection = {location: Location.shop, isValid: (card: Card) => {
-                    return library.getCardDefinition(card.name).cost <= maxBuy;
-                }, count: 1}
-                selection.push(gain)
+                const gain: UserSelection = {
+                    location: Location.shop,
+                    isValid: (card: Card) => {return library.getCardDefinition(card.name).cost <= maxBuy;},
+                    count: 1,
+                    waitForPrompt: false};
+                selection.push(gain);
                 player.pushSelection(selection, game);
                 this.handPick = false;
             }

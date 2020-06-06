@@ -22,7 +22,8 @@ export enum PlayerState {
 export interface UserSelection {
     location: Location;
     isValid: (card:Card) => boolean; // function that returns whether a given card can be added to the selection
-    count: number
+    count: number,
+    waitForPrompt: boolean;
 }
 
 export abstract class Player {
@@ -228,7 +229,10 @@ export abstract class Player {
         {
             // in the action phase you choose actions to play from your hand
             const actionPhaseSelections: UserSelection[] = [];
-            const pickAction : UserSelection = { location: Location.hand, isValid: (card: Card) => {return card.type === CardType.action;}, count: 1};
+            const pickAction : UserSelection = { location: Location.hand,
+                                                 isValid: (card: Card) => {return card.type === CardType.action;},
+                                                count: 1,
+                                                waitForPrompt: false};
             actionPhaseSelections.push(pickAction);
 
             this.userPrompts.push(['done']);
@@ -238,8 +242,15 @@ export abstract class Player {
         {
             // in the buy phase you can play treasure cards to get more coins, and use coins to buy from the shop
             const buyPhaseSelections: UserSelection[] = [];
-            const pickTreasure : UserSelection = { location: Location.hand, isValid: (card: Card) => {return card.type === CardType.treasure;}, count: 1};
-            const pickShop : UserSelection = { location: Location.shop, isValid: (card: Card) => {return true;}, count: 1};
+            const pickTreasure : UserSelection = { location: Location.hand,
+                isValid: (card: Card) => {return card.type === CardType.treasure;},
+                count: 1,
+                waitForPrompt: false
+            };
+            const pickShop : UserSelection = { location: Location.shop,
+                isValid: (card: Card) => {return true;},
+                count: 1,
+                waitForPrompt: false};
             buyPhaseSelections.push(pickTreasure);
             buyPhaseSelections.push(pickShop);
 

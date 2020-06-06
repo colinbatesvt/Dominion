@@ -50,8 +50,14 @@ export class Militia extends ActionCardDefinition
                     {
                         this.playersDone.push(false);
                         const selection: UserSelection[] = [];
-                        const discard: UserSelection = {location: Location.hand, isValid: (card: Card) => {return true;}, count: attackedPlayer.hand.length - 3}
-                        selection.push(discard)
+                        const discard: UserSelection = {location: Location.hand,
+                            isValid: (card: Card) => {return true;},
+                            count: attackedPlayer.hand.length - 3,
+                            waitForPrompt: true};
+                        selection.push(discard);
+
+                        const prompts: string[] = ["discard"];
+                        attackedPlayer.pushPrompt(prompts);
                         attackedPlayer.pushSelection(selection, game);
                         attackedPlayer.status = "Discard down to 3 cards.";
                     }
@@ -83,57 +89,63 @@ export class Militia extends ActionCardDefinition
             player.status = "Waiting for other players to discard";
     }
 
-    public onSelection(game: Game, player: Player, cards: Card[]) : boolean{
-
-        // make sure everything in the selection is in that players hand
-        let valid = true;
-        for(const card of cards)
+    public onPrompt(prompt: string, game: Game, player: Player, cards: Card[]) : boolean
+    {
+        if(prompt === "discard")
         {
-            let found = false;
-            for (const handCard of player.hand)
-            {
-                if(card.id === handCard.id)
-                {
-                    found = true;
-                }
-            }
-            if(found === false)
-            {
-                valid = false;
-            }
-        }
-
-        // if the selection was valid, discard the selected cards
-        if(valid === false)
-            return false;
-        else
-        {
+            // make sure everything in the selection is in that players hand
+            let valid = true;
             for(const card of cards)
             {
-                player.discardCard(card);
+                let found = false;
+                for (const handCard of player.hand)
+                {
+                    if(card.id === handCard.id)
+                    {
+                        found = true;
+                    }
+                }
+                if(found === false)
+                {
+                    valid = false;
+                }
             }
-        }
 
-        this.playersDone[player.index] = true;
-        player.popSelection();
-        player.status = "";
-
-        // see if everyone has discarded, and if they have, clean up
-        let bAllDone = true;
-        for(const done of this.playersDone)
-        {
-            if(done === false)
+            // if the selection was valid, discard the selected cards
+            if(valid === false)
+                return false;
+            else
             {
-                bAllDone = false;
+                for(const card of cards)
+                {
+                    player.discardCard(card);
+                }
             }
+
+            this.playersDone[player.index] = true;
+            player.popSelection();
+            player.popPrompt();
+            player.status = "";
+
+            // see if everyone has discarded, and if they have, clean up
+            let bAllDone = true;
+            for(const done of this.playersDone)
+            {
+                if(done === false)
+                {
+                    bAllDone = false;
+                }
+            }
+
+            if(bAllDone)
+            {
+                game.finishExecution(this);
+                game.players[game.currentPlayer].status = "";
+            }
+
+            return true;
         }
 
-        if(bAllDone)
-        {
-            game.finishExecution(this);
-            game.players[game.currentPlayer].status = "";
-        }
-
-        return true;
+        return false;
     }
 }

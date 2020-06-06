@@ -30,8 +30,12 @@ export class Mine extends ActionCardDefinition
         if(valid === true)
         {
             const selection: UserSelection[] = [];
-            const trash: UserSelection = {location: Location.hand, isValid: (card: Card) => {return card.type === CardType.treasure;}, count: 1}
-            selection.push(trash)
+            const trash: UserSelection = {
+                location: Location.hand,
+                isValid: (card: Card) => {return card.type === CardType.treasure;},
+                count: 1,
+                waitForPrompt: false};
+            selection.push(trash);
             player.pushSelection(selection, game);
             this.handPick = true;
             player.status = "Choose a treasure card from your hand to trash"
@@ -64,9 +68,11 @@ export class Mine extends ActionCardDefinition
                 const selection: UserSelection[] = [];
                 const library: CardLibrary = new CardLibrary();
                 const maxBuy: number = library.getCardDefinition(trashCard.name).cost + 3;
-                const gain: UserSelection = {location: Location.shop, isValid: (card: Card) => {
-                    return library.getCardDefinition(card.name).cost <= maxBuy;
-                }, count: 1}
+                const gain: UserSelection = {
+                    location: Location.shop,
+                    isValid: (card: Card) => { return library.getCardDefinition(card.name).cost <= maxBuy;},
+                    count: 1,
+                    waitForPrompt: false};
                 selection.push(gain)
                 player.pushSelection(selection, game);
                 this.handPick = false;

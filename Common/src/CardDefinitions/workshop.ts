@@ -18,11 +18,15 @@ export class Workshop extends ActionCardDefinition
         // gain a card costing up to 4
 
         const selection: UserSelection[] = [];
-        const gain: UserSelection = {location: Location.shop, isValid: (card: Card) => {
-            const library: CardLibrary = new CardLibrary();
-            return library.getCardDefinition(card.name).cost <= 4;
-        }, count: 1}
-        selection.push(gain)
+        const gain: UserSelection = {
+            location: Location.shop,
+            isValid: (card: Card) => {
+                const library: CardLibrary = new CardLibrary();
+                return library.getCardDefinition(card.name).cost <= 4;
+            },
+            count: 1,
+            waitForPrompt: false};
+        selection.push(gain);
         player.pushSelection(selection, game);
         player.status = "Gain a card costing up to 4";
     }

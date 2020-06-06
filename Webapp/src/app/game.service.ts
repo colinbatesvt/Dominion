@@ -38,7 +38,6 @@ export class GameService {
           this.player = game.players[this.player.index];
           this.gameSubject.next(this.game);
 
-          console.log(this.player);
           this.statusService.updateStatus(this.game);
         }
     });
@@ -199,6 +198,10 @@ export class GameService {
       return;
     }
 
+
+    const waitForPrompt = this.player.userSelections[this.player.userSelections.length - 1][0].waitForPrompt;
+    const count = this.player.userSelections[this.player.userSelections.length - 1][0].count;
+
     // card selected in game
     // if the card is already selected, remove it from the selection
     for (let i = 0; i < this.selectedCards.length; i++)
@@ -210,9 +213,14 @@ export class GameService {
         return;
       }
     }
+
+    // if too many things are selected, deselect the first thing
+    if (this.selectedCards.length === count)
+    {
+      this.selectedCards.splice(0, 1);
+    }
     this.selectedCards.push(card);
-    const count = this.player.userSelections[this.player.userSelections.length - 1][0].count;
-    if (this.selectedCards.length >= count && count !== -1)
+    if (this.selectedCards.length >= count && waitForPrompt === false)
     {
       this.sendToServer('cards-selected',
       {
