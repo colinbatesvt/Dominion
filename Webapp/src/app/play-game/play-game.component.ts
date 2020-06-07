@@ -53,8 +53,36 @@ export class PlayGameComponent implements OnInit {
     this.gameService.onPromptClicked(prompt);
   }
 
+  isPromptDisabled(prompt: string)
+  {
+    if (prompt === 'end action phase')
+    {
+      if (this.myPlayer.state === PlayerState.Action)
+      {
+        return false;
+      }
+      else
+      {
+        return true;
+      }
+    }
+    else if (prompt === 'end buy phase')
+    {
+      if (this.myPlayer.state === PlayerState.Buy)
+      {
+        return false;
+      }
+      else
+      {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   isPromptHighlighted(prompt: string): boolean {
-    if (prompt === 'done')
+    if (prompt === 'end action phase')
     {
       if (this.myPlayer.state === PlayerState.Action)
       {
@@ -72,7 +100,10 @@ export class PlayGameComponent implements OnInit {
           return true;
         }
       }
-      else if (this.myPlayer.state === PlayerState.Buy && this.myPlayer.buys === 0)
+    }
+    else if (prompt === 'end buy phase')
+    {
+      if (this.myPlayer.state === PlayerState.Buy && this.myPlayer.buys === 0)
       {
         return true;
       }
@@ -80,6 +111,10 @@ export class PlayGameComponent implements OnInit {
 
     return false;
 
+  }
+
+  onRefreshClicked() {
+    // nothing yet
   }
 
   initPlayers() {

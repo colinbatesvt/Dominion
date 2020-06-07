@@ -1,7 +1,12 @@
 
 <div id = "status">
+    <button id="refresh_button" mat-raised-button (click)="onRefreshClicked()">refresh game</button>
     {{getStatus()}}
-    <button mat-button *ngFor="let prompt of myPlayer.userPrompts[myPlayer.userPrompts.length-1]" [class.highlighted]="isPromptHighlighted(prompt) === true" (click)="onPromptClicked(prompt)">{{prompt}}</button>
+    <button mat-raised-button class="prompt" *ngFor="let prompt of this.myPlayer.userPrompts[this.myPlayer.userPrompts.length - 1]" 
+        [disabled]="isPromptDisabled(prompt)" 
+        (click)="onPromptClicked(prompt)">
+        {{prompt}}
+    </button>
     <mat-divider></mat-divider>
 </div>
 

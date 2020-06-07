@@ -606,9 +606,18 @@ export class Game {
             if(this.executingCards[this.executingCards.length - 1].onPrompt(prompt, this, this.players[playerIndex], cards) === true)
                 return;
         }
-        if(prompt === 'done')
+
+        // game state can only be advanced by the current player
+        if(playerIndex === this.currentPlayer)
         {
-            this.advanceGame();
+            if(prompt === 'end action phase' && this.players[playerIndex].state === PlayerState.Action)
+            {
+                this.advanceGame();
+            }
+            if(prompt === 'end buy phase' && this.players[playerIndex].state === PlayerState.Buy)
+            {
+                this.advanceGame();
+            }
         }
     }
 

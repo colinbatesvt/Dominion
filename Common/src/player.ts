@@ -234,8 +234,7 @@ export abstract class Player {
                                                 count: 1,
                                                 waitForPrompt: false};
             actionPhaseSelections.push(pickAction);
-
-            this.userPrompts.push(['done']);
+            this.userPrompts.push(['end action phase', 'end buy phase']);
             this.pushSelection(actionPhaseSelections, game);
         }
         else if (this.state === PlayerState.Buy)
@@ -253,8 +252,7 @@ export abstract class Player {
                 waitForPrompt: false};
             buyPhaseSelections.push(pickTreasure);
             buyPhaseSelections.push(pickShop);
-
-            this.userPrompts.push(['done']);
+            this.userPrompts.push(['end action phase', 'end buy phase']);
             this.pushSelection(buyPhaseSelections, game);
         }
         else if(this.state === PlayerState.CleanUp)
