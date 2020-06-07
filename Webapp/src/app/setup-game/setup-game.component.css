@@ -45,8 +45,8 @@ mat-card-content {
     width: 100%;
     height:90%;
     display: grid;
-    grid-template-columns: repeat(4, 25%);
-    grid-template-rows: repeat(3, 30%);
+    grid-template-columns: repeat(6, calc(16% - 2em));
+    grid-template-rows: repeat(3, calc(33% - 2em));
     grid-gap: 1em;
 }
 

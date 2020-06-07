@@ -17,6 +17,10 @@ import { Remodel } from "./CardDefinitions/Remodel";
 import { Smithy } from "./CardDefinitions/smithy";
 import { Village } from "./CardDefinitions/village";
 import { Woodcutter } from "./CardDefinitions/woodcutter";
+import { Laboratory } from "./CardDefinitions/laboratory";
+import { Festival } from "./CardDefinitions/festival";
+import { CouncilRoom } from "./CardDefinitions/council_room";
+import { Chapel } from "./CardDefinitions/chapel";
 
 export class CardLibrary {
 
@@ -48,6 +52,10 @@ export class CardLibrary {
         this.cardIndex[Village.cardName] = new Village();
         this.cardIndex[Woodcutter.cardName] = new Woodcutter();
         this.cardIndex[Workshop.cardName] = new Workshop();
+        this.cardIndex[Laboratory.cardName] = new Laboratory();
+        this.cardIndex[Festival.cardName] = new Festival();
+        this.cardIndex[CouncilRoom.cardName] = new CouncilRoom();
+        this.cardIndex[Chapel.cardName] = new Chapel();
 
         // presets
         this.presetIndex = {};
