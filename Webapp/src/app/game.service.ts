@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
 import { Observable, Subject } from 'rxjs';
 import { Game, GameState } from '../../../Common/src/game';
-import { Player, PlayerState, Location } from '../../../Common/src/player';
+import { Player, PlayerState, Location, HumanPlayer } from '../../../Common/src/player';
 import { StatusService } from './status.service';
 import { Card } from '../../../Common/src/card';
 import { CardType } from '../../../Common/src/card-definition';
@@ -32,6 +32,7 @@ export class GameService {
     this.viewedPileSubject = new Subject<Card[]>();
 
     this.socket.on('game-updated', (game: Game) => {
+        console.log('game updated');
         if (this.game !== undefined)
         {
           this.game = game;
@@ -102,6 +103,8 @@ export class GameService {
 
   public refreshGame()
   {
+    // this.socket.disconnect();
+    // this.socket.connect();
     this.sendToServer('refresh-game', {gameName: this.game.name, playerName: this.player.name}, () => {});
   }
 
