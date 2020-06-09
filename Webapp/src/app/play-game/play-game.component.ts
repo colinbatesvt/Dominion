@@ -114,7 +114,7 @@ export class PlayGameComponent implements OnInit {
   }
 
   onRefreshClicked() {
-    // nothing yet
+    this.gameService.refreshGame();
   }
 
   initPlayers() {

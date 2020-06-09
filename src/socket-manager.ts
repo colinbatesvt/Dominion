@@ -181,6 +181,26 @@ export class SocketManager implements ServerInterface{
                 this.io.sockets.emit('games-updated', this.gameList);
             });
 
+        connectedSocket.on('refresh-game', (data: any, resultCallback: any) => {
+            console.log('refreshing game ' + data.gameName + ' for ' + data.playerName);
+
+            const refreshGame: Game = this.gameList.find(game => game.name === data.gameName);
+            const refreshPlayer = refreshGame.findPlayerByName(data.playerName);
+            if(refreshPlayer instanceof HumanPlayer)
+            {
+                const humanPlayer = refreshPlayer as HumanPlayer;
+
+                // if the player is disconnected, reconnect them
+                if(humanPlayer.connected === false)
+                {
+                    refreshGame.playerJoin(humanPlayer.name, humanPlayer.color, connectedSocket.id);
+                    this.socketsByGameName[data.gameName].push(connectedSocket);
+                }
+
+                this.updateGame(refreshGame);
+            }
+        });
+
             connectedSocket.on('setup-card-selected', (data: any, resultCallback: any) => {
                 console.log('card selected');
                 const game: Game = this.getGame(data.gameName);

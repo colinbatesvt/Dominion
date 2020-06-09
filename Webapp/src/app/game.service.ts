@@ -100,6 +100,11 @@ export class GameService {
     this.sendToServer('request-games-list', {}, () => {});
   }
 
+  public refreshGame()
+  {
+    this.sendToServer('refresh-game', {gameName: this.game.name, playerName: this.player.name}, () => {});
+  }
+
   public setupSelectCard(card: Card)
   {
     this.sendToServer('setup-card-selected', {

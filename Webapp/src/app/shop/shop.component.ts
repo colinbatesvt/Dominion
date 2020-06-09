@@ -30,9 +30,12 @@ export class ShopComponent implements OnInit {
     this.initShopPiles();
 
     this.gameService.onGameChanged().subscribe((game: Game) => {
-      this.shop = game.shop;
-      this.trash = game.trash;
-      this.initShopPiles();
+      if (game !== undefined)
+      {
+        this.shop = game.shop;
+        this.trash = game.trash;
+        this.initShopPiles();
+      }
     });
   }
 
