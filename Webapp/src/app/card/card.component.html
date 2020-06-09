@@ -1,5 +1,5 @@
 
-<img src="{{getImgSrc()}}" [class.hovered]="hovered" [class.selected]="selected" [class.unselected]="!selected" [class.highlighted]="highlighted" (click)="onClick()" [ngClass]="{
+<img src="{{getImgSrc()}}" [class.hovered]="hovered && hasTouch() === false" [class.selected]="selected" [class.unselected]="!selected" [class.highlighted]="highlighted" (click)="onClick()" [ngClass]="{
     'bottom': orientation==='bottom',
     'left': orientation==='left',
     'top': orientation==='top',

@@ -48,4 +48,10 @@ export class CardPileComponent implements OnInit {
     }
   }
 
+  hasTouch(): boolean {
+    return 'ontouchstart' in document.documentElement
+           || navigator.maxTouchPoints > 0
+           || navigator.msMaxTouchPoints > 0;
+  }
+
 }

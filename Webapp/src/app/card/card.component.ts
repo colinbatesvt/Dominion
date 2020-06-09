@@ -48,4 +48,10 @@ export class CardComponent implements OnInit {
   onView() {
     this.gameService.setViewedCard(this.card);
   }
+
+  hasTouch(): boolean {
+    return 'ontouchstart' in document.documentElement
+           || navigator.maxTouchPoints > 0
+           || navigator.msMaxTouchPoints > 0;
+  }
 }
