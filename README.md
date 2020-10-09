@@ -1,8 +1,8 @@
 # Dominion
-An Angluar & node based remake of the Dominion card game.
+An Angluar & node based remake of the Dominion card game.  
 playable at: https://colins-dominion.herokuapp.com/
 
-Feature:s
+Features:
 - Online multiplayer up to 4 people using websockets
 - Automatic card logic: gold, buys, and actions tracked and calculated automatically
 - Interface built in angular html and css. Clean, easy to use, and fast
