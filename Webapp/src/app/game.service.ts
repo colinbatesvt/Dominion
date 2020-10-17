@@ -42,6 +42,11 @@ export class GameService {
           this.statusService.updateStatus(this.game);
         }
     });
+
+    this.socket.on('disconnect', () => {
+      console.log('socket disconnected');
+      this.statusService.setStatus('CONNECTION ERROR');
+    });
   }
 
   public getPlayer(): Player {
