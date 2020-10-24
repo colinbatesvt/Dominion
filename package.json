@@ -1,15 +1,15 @@
 {
   "name": "dominion-server",
   "version": "1.0.0",
-  "description": "server for the dominion web app game",  
+  "description": "server for the dominion web app game",
   "engines": {
     "node": "12.x"
   },
   "main": "dist/server.js",
-    "scripts": {
-	  "tsc": "tsc",
+  "scripts": {
+    "tsc": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
-	  "postinstall": "cd Common && npm run tsc && cd ../Webapp && ng build --prod && cd .. && npm run tsc",
+    "postinstall": "cd Common && npm run tsc && cd ../Webapp && ng build --prod && cd .. && npm run tsc",
     "start": "node dist/src/server.js"
   },
   "author": "Colin Bates",

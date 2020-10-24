@@ -42,6 +42,7 @@ Server/node_modules/
 Server/jspm_packages/
 Webapp/node_modules/
 Webapp/jspm_packages/
+node_modules/
 
 # TypeScript v1 declaration files
 typings/
