@@ -61,7 +61,7 @@ const config: SocketIoConfig = { url: window.location.protocol + '//' + window.l
       MatSidenavModule,
       MatListModule,
       MatSelectModule,
-      ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
+      ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production, registrationStrategy: 'registerImmediately' })
    ],
    providers: [ CookieService ],
    bootstrap: [
