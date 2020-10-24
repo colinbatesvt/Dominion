@@ -28,6 +28,8 @@ import { CardPileComponent } from './card-pile/card-pile.component';
 import { ShopComponent } from './shop/shop.component';
 import { GameOverComponent } from './game-over/game-over.component';
 import {CookieService } from 'ngx-cookie-service';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 const config: SocketIoConfig = { url: window.location.protocol + '//' + window.location.host, options: {} };
 
@@ -58,7 +60,8 @@ const config: SocketIoConfig = { url: window.location.protocol + '//' + window.l
       MatIconModule,
       MatSidenavModule,
       MatListModule,
-      MatSelectModule
+      MatSelectModule,
+      ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
    ],
    providers: [ CookieService ],
    bootstrap: [
