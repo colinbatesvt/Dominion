@@ -20,10 +20,8 @@
     margin-top: 1px;
 
     display: grid;
-    grid-template-columns: repeat(5, calc(10% - 2em));
+    grid-template-columns: repeat(5, 20%);
     grid-template-rows: repeat(2, calc(50% - 1em));
-    column-gap: 10em;
-
     height: 70%;
 }
 
