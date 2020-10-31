@@ -45,14 +45,17 @@ export class ShopComponent implements OnInit {
     this.kingdomCards = [];
 
     for (const item in this.shop) {
-      if (this.shop[item][0].isKingdom)
+      if (this.shop[item].length > 0)
       {
-        this.kingdomCards.push(this.shop[item]);
-      }
-      else
-      {
-        this.basicCards.push(this.shop[item]);
-      }
+        if (this.shop[item][0].isKingdom)
+        {
+          this.kingdomCards.push(this.shop[item]);
+        }
+        else
+        {
+          this.basicCards.push(this.shop[item]);
+        }
+    }
     }
   }
 

@@ -13,7 +13,7 @@
     {
         "label": "angular_build",
         "type": "shell",
-        "command": "ng build",
+        "command": "ng build --prod",
         "options": {
             "cwd": "${workspaceRoot}/WebApp"
           }
